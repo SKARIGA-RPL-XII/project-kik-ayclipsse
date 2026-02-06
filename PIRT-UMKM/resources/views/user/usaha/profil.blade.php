@@ -50,7 +50,7 @@
         </div>
 
         <button class="btn-edit" id="openModal">
-            <img src="{{ asset('img/edit-3.png') }}" alt="Edit">Edit Produk
+            <img src="{{ asset('img/edit-3.png') }}" alt="Edit">Edit Usaha
         </button>
     </div>
 

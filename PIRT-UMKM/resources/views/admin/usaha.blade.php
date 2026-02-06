@@ -28,12 +28,10 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Nama Produk</th>
-                            <th>Jenis Produk</th>
-                            <th>Komposisi</th>
-                            <th>Berat Bersih</th>
-                            <th>Kemasan</th>
-                            <th>Verifikasi</th>
+                            <th>Nama Usaha</th>
+                            <th>Jenis Usaha</th>
+                            <th>Alamat Usaha</th>
+                            <th>Status</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -44,16 +42,16 @@
                             <td>Tidak</td>
                             <td>Tidak</td>
                             <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
                             <td><span class="badge-success">Terdaftar PIRT</span></td>
                             <td class="action">
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/edit-2.png') }}" alt="Edit">
-                                </a>
-                                <a href="#" class="icon-btn">
+                                <a href="javascript:void(0)" class="icon-btn btn-edit-produk">
                                     <img src="{{ asset('img/eye.png') }}" alt="Lihat">
                                 </a>
+
+                                <a href="javascript:void(0)" class="icon-btn btn-delete-usaha">
+                                    <img src="{{ asset('img/trash.png') }}" alt="Hapus">
+                                </a>
+
                             </td>
 
                         </tr>
@@ -62,16 +60,16 @@
                             <td>Tidak</td>
                             <td>Tidak</td>
                             <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
                             <td><span class="badge-success">Terdaftar PIRT</span></td>
                             <td class="action">
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/edit-2.png') }}" alt="Edit">
-                                </a>
-                                <a href="#" class="icon-btn">
+                                <a href="javascript:void(0)" class="icon-btn btn-edit-produk">
                                     <img src="{{ asset('img/eye.png') }}" alt="Lihat">
                                 </a>
+
+                                <a href="javascript:void(0)" class="icon-btn btn-delete-usaha">
+                                    <img src="{{ asset('img/trash.png') }}" alt="Hapus">
+                                </a>
+
                             </td>
                         </tr>
                         <tr>
@@ -79,16 +77,16 @@
                             <td>Tidak</td>
                             <td>Tidak</td>
                             <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
                             <td><span class="badge-success">Terdaftar PIRT</span></td>
                             <td class="action">
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/edit-2.png') }}" alt="Edit">
-                                </a>
-                                <a href="#" class="icon-btn">
+                                <a href="javascript:void(0)" class="icon-btn btn-edit-produk">
                                     <img src="{{ asset('img/eye.png') }}" alt="Lihat">
                                 </a>
+
+                                <a href="javascript:void(0)" class="icon-btn btn-delete-usaha">
+                                    <img src="{{ asset('img/trash.png') }}" alt="Hapus">
+                                </a>
+
                             </td>
                         </tr>
                         <tr>
@@ -96,33 +94,33 @@
                             <td>Tidak</td>
                             <td>Tidak</td>
                             <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
                             <td><span class="badge-success">Terdaftar PIRT</span></td>
                             <td class="action">
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/edit-2.png') }}" alt="Edit">
-                                </a>
-                                <a href="#" class="icon-btn">
+                                <a href="javascript:void(0)" class="icon-btn btn-edit-produk">
                                     <img src="{{ asset('img/eye.png') }}" alt="Lihat">
                                 </a>
+
+                                <a href="javascript:void(0)" class="icon-btn btn-delete-usaha">
+                                    <img src="{{ asset('img/trash.png') }}" alt="Hapus">
+                                </a>
+
                             </td>
                         </tr>
                         <tr>
                             <td>1.</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
                             <td>Tidak</td>
                             <td>Tidak</td>
                             <td>Tidak</td>
                             <td><span class="badge-warning">Menunggu persetujuan</span></td>
                             <td class="action">
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/edit-2.png') }}" alt="Edit">
-                                </a>
-                                <a href="#" class="icon-btn">
+                                <a href="javascript:void(0)" class="icon-btn btn-edit-produk">
                                     <img src="{{ asset('img/eye.png') }}" alt="Lihat">
                                 </a>
+
+                                <a href="javascript:void(0)" class="icon-btn btn-delete-usaha">
+                                    <img src="{{ asset('img/trash.png') }}" alt="Hapus">
+                                </a>
+
                             </td>
                         </tr>
                     </tbody>
@@ -158,8 +156,149 @@
 
     </div>
 
+    <!-- MODAL EDIT PRODUK -->
+    <div class="modal-overlay" id="editProdukModal">
+        <div class="modal-edit-produk">
+
+            <!-- HEADER -->
+            <div class="modal-header">
+                <div>
+                    <h2>Detail Usaha</h2>
+                    <small>Usaha &nbsp;›&nbsp; <strong>Detail Usaha</strong></small>
+                </div>
+            </div>
+
+            <!-- CARD DETAIL USAHA -->
+            <div class="modal-card usaha-card">
+                <div class="usaha-header">
+                    <div class="avatar"></div>
+                    <div>
+                        <h3>DAPUR NUSANTARA</h3>
+                        <span>Makanan / Minuman</span>
+                    </div>
+                </div>
+
+                <div class="usaha-info">
+                    <div><strong>Nama Usaha</strong></div>
+                    <div>: DAPUR NUSANTARA</div>
+                    <div><strong>Alamat Usaha</strong></div>
+                    <div>: Jl. Kamboja Atas, RT3/RW4, Pesanggrahan, Kota Batu</div>
+                    <div><strong>Jenis Usaha</strong></div>
+                    <div>: Makanan / Minuman</div>
+                    <div><strong>Produk</strong></div>
+                    <div>
+                        1. Jamu Temulawak<br>
+                        2. Jamu Beras Kencur
+                    </div>
+                    <div><strong>Izin Usaha</strong></div>
+                    <div><span class="badge-success">Izin usaha telah disetujui</span></div>
+                    <div><strong>Tanggal Berdiri</strong></div>
+                    <div>: 14 Januari 2015</div>
+                </div>
+
+                <button class="btn-detail-produk">Detail Produk Usaha</button>
+            </div>
+
+            <!-- CARD INSPEKSI -->
+            <div class="modal-card">
+                <h3>Tabel Inspeksi</h3>
+
+                <div class="search-wrapper">
+                    <input type="text" placeholder="Cari Data...">
+                    <button class="btn-edit-table">Edit Tabel</button>
+                </div>
+
+                <div class="table-container">
+
+                    <table class="custom-table inspeksi-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Variabel / Komponen</th>
+                                <th>Bobot</th>
+                                <th>Pelanggaran</th>
+                                <th>Nilai</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr class="section">
+                                <td>A.</td>
+                                <td colspan="4">LOKASI DAN LINGKUNGAN PRODUKSI</td>
+                            </tr>
+                            <tr>
+                                <td>1.</td>
+                                <td>Lokasi dan lingkungan IRTP tidak terawat, kotor dan berdebu</td>
+                                <td>2</td>
+                                <td>Tidak</td>
+                                <td>2</td>
+                            </tr>
+
+                            <tr class="section">
+                                <td>B.</td>
+                                <td colspan="4">BANGUNAN DAN FASILITAS</td>
+                            </tr>
+                            <tr>
+                                <td>2.</td>
+                                <td>Ruang produksi sempit, sukar dibersihkan</td>
+                                <td>1</td>
+                                <td>Tidak</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>3.</td>
+                                <td>Lantai, dinding, dan langit-langit tidak terawat</td>
+                                <td>3</td>
+                                <td>Ya</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>4.</td>
+                                <td>Ventilasi, pintu, dan jendela tidak terawat</td>
+                                <td>2</td>
+                                <td>Tidak</td>
+                                <td>2</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <div class="table-footer">
+                    <div class="showing">
+                        Showing 5 data out of 20
+                    </div>
+
+                    <div class="pagination">
+                        <button class="nav">‹</button>
+                        <button class="active">1</button>
+                        <button class="page">2</button>
+                        <span class="dots">…</span>
+                        <button class="page">5</button>
+                        <button class="nav">›</button>
+                    </div>
+                </div>
+
+                <div class="note" style="margin-top:12px;font-size:12px;line-height:1.6">
+                    <strong>Keterangan:</strong><br>
+                    Bobot 1 : Risiko rendah<br>
+                    Bobot 2 : Risiko sedang<br>
+                    Bobot 3 : Risiko tinggi / kritis<br><br>
+                    Tanda <strong>Ya</strong> : Kondisi TIDAK memenuhi syarat<br>
+                    Tanda <strong>Tidak</strong> : Kondisi memenuhi syarat<br><br>
+                    Nilai = Jika Tanda Ya → Nilai = 0<br>
+                    Nilai = Jika Tanda Tidak → Nilai = Bobot
+                </div>
+
+                <div class="note">
+                    <small>Keterangan bobot dan penilaian sesuai standar PIRT</small>
+                </div>
+            </div>
+
+        </div>
 
     </div>
+
 
 
     <style>
@@ -172,8 +311,8 @@
         }
 
         /* =====================
-       TOP BAR
-    ===================== */
+                                                           TOP BAR
+                                                        ===================== */
         .table-top {
             display: flex;
             justify-content: space-between;
@@ -218,8 +357,8 @@
         }
 
         /* =====================
-       BUTTON TAMBAH
-    ===================== */
+                                                           BUTTON TAMBAH
+                                                        ===================== */
         .btn-primary {
             height: 40px;
             background: #083b6f;
@@ -359,8 +498,8 @@
 
 
         /* =====================
-               TABLE FOOTER
-            ===================== */
+                                                                   TABLE FOOTER
+                                                                ===================== */
         .table-footer {
             margin-top: 12px;
             padding: 14px 16px;
@@ -401,8 +540,8 @@
         }
 
         /* =====================
-               PAGINATION WRAPPER
-            ===================== */
+                                                                   PAGINATION WRAPPER
+                                                                ===================== */
         .pagination-wrapper {
             display: flex;
             align-items: center;
@@ -476,5 +615,156 @@
             background: #003366;
             color: #ffffff;
         }
+
+        /* =====================
+                                               MODAL OVERLAY
+                                            ===================== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        /* =====================
+                                               MODAL DETAIL PRODUK
+                                            ===================== */
+        .modal-edit-produk {
+            background: #ffffff;
+            width: 820px;
+            max-width: 95%;
+            padding: 24px;
+            border-radius: 10px;
+        }
+
+        .modal-edit-produk h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #083b6f;
+        }
+
+        .modal-subtitle {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+
+        .modal-card {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .modal-card h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .modal-card h3 span {
+            font-size: 12px;
+            color: #64748b;
+            margin-left: 6px;
+        }
+
+        /* HEADER MODAL */
+        .modal-header h2 {
+            font-size: 20px;
+            color: #083b6f;
+        }
+
+        .modal-header small {
+            color: #64748b;
+        }
+
+        /* USAHA CARD */
+        .usaha-header {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .avatar {
+            width: 56px;
+            height: 56px;
+            background: #d1d5db;
+            border-radius: 50%;
+        }
+
+        .usaha-info {
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 6px 12px;
+            font-size: 13px;
+        }
+
+        /* BUTTON */
+        .btn-detail-produk {
+            margin-top: 16px;
+            background: #083b6f;
+            color: #fff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .btn-edit-table {
+            background: #16a34a;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 8px 12px;
+            font-size: 13px;
+            color: #374151;
+        }
+
+        .komposisi {
+            line-height: 1.6;
+        }
+
+        /* SECTION ROW INSPEKSI */
+        .inspeksi-table .section {
+            background: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .inspeksi-table td:nth-child(1),
+        .inspeksi-table td:nth-child(3),
+        .inspeksi-table td:nth-child(4),
+        .inspeksi-table td:nth-child(5) {
+            text-align: center;
+        }
     </style>
+    <script>
+        document.addEventListener('click', function(e) {
+
+            // === OPEN MODAL EDIT PRODUK ===
+            const editBtn = e.target.closest('.btn-edit-produk');
+            if (editBtn) {
+                e.preventDefault();
+                document.getElementById('editProdukModal').style.display = 'flex';
+                return;
+            }
+
+            // === CLOSE MODAL KLIK OVERLAY ===
+            const modal = e.target.classList.contains('modal-overlay');
+            if (modal) {
+                e.target.style.display = 'none';
+            }
+
+        });
+    </script>
+
+
 @endsection

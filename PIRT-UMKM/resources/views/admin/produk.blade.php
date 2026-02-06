@@ -12,6 +12,18 @@
     <div class="card">
 
         <div class="table-card">
+            <!-- TABLE HEADER -->
+            <div class="table-header">
+                <button class="nav-btn">
+                    ‹
+                </button>
+
+                <h3>Tabel Usaha</h3>
+
+                <button class="nav-btn">
+                    ›
+                </button>
+            </div>
 
             <!-- TOP BAR -->
             <div class="table-top">
@@ -28,11 +40,9 @@
                     <thead>
                         <tr>
                             <th>No</th>
+                            <th>Nama Usaha</th>
                             <th>Nama Produk</th>
                             <th>Jenis Produk</th>
-                            <th>Komposisi</th>
-                            <th>Berat Bersih</th>
-                            <th>Kemasan</th>
                             <th>Verifikasi</th>
                             <th></th>
                         </tr>
@@ -40,92 +50,42 @@
 
                     <tbody>
                         <tr>
-                            <td>1.</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td><span class="badge-success">Terdaftar PIRT</span></td>
+                            <td>1</td>
+                            <td>DAPUR NUSANTARA</td>
+                            <td>Jamu Temulawak</td>
+                            <td>Minuman</td>
+                            <td>
+                                <span class="badge-success">Terdaftar PIRT</span>
+                            </td>
                             <td class="action">
                                 <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/edit-2.png') }}" alt="Edit">
+                                    <img src="{{ asset('img/eye.png') }}">
                                 </a>
                                 <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/eye.png') }}" alt="Lihat">
+                                    <img src="{{ asset('img/trash.png') }}">
                                 </a>
                             </td>
+                        </tr>
 
-                        </tr>
                         <tr>
-                            <td>1.</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td><span class="badge-success">Terdaftar PIRT</span></td>
-                            <td class="action">
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/edit-2.png') }}" alt="Edit">
-                                </a>
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/eye.png') }}" alt="Lihat">
-                                </a>
+                            <td>2</td>
+                            <td>CEMALICIOUS</td>
+                            <td>Keripik Singkong Original</td>
+                            <td>Makanan</td>
+                            <td>
+                                <span class="badge-warning">Menunggu persetujuan</span>
                             </td>
-                        </tr>
-                        <tr>
-                            <td>1.</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td><span class="badge-success">Terdaftar PIRT</span></td>
                             <td class="action">
                                 <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/edit-2.png') }}" alt="Edit">
+                                    <img src="{{ asset('img/edit-2.png') }}">
                                 </a>
                                 <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/eye.png') }}" alt="Lihat">
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>1.</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td><span class="badge-success">Terdaftar PIRT</span></td>
-                            <td class="action">
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/edit-2.png') }}" alt="Edit">
-                                </a>
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/eye.png') }}" alt="Lihat">
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>1.</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td><span class="badge-warning">Menunggu persetujuan</span></td>
-                            <td class="action">
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/edit-2.png') }}" alt="Edit">
-                                </a>
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/eye.png') }}" alt="Lihat">
+                                    <img src="{{ asset('img/trash.png') }}">
                                 </a>
                             </td>
                         </tr>
                     </tbody>
+
                 </table>
             </div>
 
@@ -172,8 +132,8 @@
         }
 
         /* =====================
-       TOP BAR
-    ===================== */
+                               TOP BAR
+                            ===================== */
         .table-top {
             display: flex;
             justify-content: space-between;
@@ -218,8 +178,8 @@
         }
 
         /* =====================
-       BUTTON TAMBAH
-    ===================== */
+                               BUTTON TAMBAH
+                            ===================== */
         .btn-primary {
             height: 40px;
             background: #083b6f;
@@ -237,6 +197,47 @@
             background: #062f57;
         }
 
+        /* =====================
+       TABLE HEADER
+    ===================== */
+        .table-header {
+            background: #e9eef3;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 14px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .table-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 500;
+            color: #000000;
+        }
+
+        /* NAV BUTTON */
+        .nav-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 6px;
+            background: #083b6f;
+            color: #ffffff;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-btn:hover {
+            background: #062f57;
+        }
+
         /* TABLE CONTAINER */
         .table-container {
             border: 1px solid #cbd5e1;
@@ -249,6 +250,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 13px;
+
         }
 
         .custom-table thead {
@@ -275,6 +277,7 @@
         .custom-table tbody tr:last-child {
             border-bottom: none;
         }
+
 
         /* BADGE */
         .badge-success {
@@ -311,14 +314,22 @@
         }
 
         .badge-warning::before {
-            content: "⏳";
+            content: "⟳";
+            border: 1px solid #94a3b8;
+            border-radius: 9999px;
+            padding: 2px 4px;
+            font-size: 8px;
         }
+
 
         /* ACTION */
         .action {
-            font-size: 14px;
-            white-space: nowrap;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
         }
+
 
         /* FOOTER */
         .table-footer {
@@ -357,10 +368,6 @@
             height: 16px;
         }
 
-
-        /* =====================
-               TABLE FOOTER
-            ===================== */
         .table-footer {
             margin-top: 12px;
             padding: 14px 16px;
@@ -401,8 +408,8 @@
         }
 
         /* =====================
-               PAGINATION WRAPPER
-            ===================== */
+                                       PAGINATION WRAPPER
+                                    ===================== */
         .pagination-wrapper {
             display: flex;
             align-items: center;
