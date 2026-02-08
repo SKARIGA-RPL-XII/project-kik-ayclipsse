@@ -17,8 +17,9 @@
             <div class="table-top">
                 <div class="search-wrapper">
                     <img src="{{ asset('img/search.png') }}" class="search-icon" alt="search">
-                    <input type="text" placeholder="Cari Data...">
+                    <input type="text" id="search" placeholder="Cari Data..." autocomplete="off">
                 </div>
+
 
                 <button class="btn-primary">
                     Tambah Produk Usaha Baru
@@ -42,129 +43,83 @@
                         </tr>
                     </thead>
 
-                    <tbody>
-                        <tr>
-                            <td>1.</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td><span class="badge-success">Terdaftar PIRT</span></td>
-                            <td class="action">
-                                <a href="javascript:void(0)" class="icon-btn btn-edit-produk">
-                                    <img src="{{ asset('img/edit-2.png') }}" alt="Edit">
-                                </a>
+                    <tbody id="produk-body">
+                        @forelse ($produk as $i => $item)
+                            <tr>
+                                <td>{{ $i + 1 }}</td>
+                                <td>{{ $item->nama_produk }}</td>
+                                <td>{{ $usaha->jenis_usaha }}</td>
+                                <td>{{ $item->komposisi }}</td>
+                                <td>{{ $item->berat_bersih }} gr</td>
+                                <td>{{ $item->kemasan }}</td>
 
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/eye.png') }}" alt="Lihat">
-                                </a>
-                            </td>
+                                <td>
+                                    @if ($item->verifikasi && $item->verifikasi->hasil_verifikasi === 'disetujui')
+                                        <span class="badge-success">Terdaftar PIRT</span>
+                                    @else
+                                        <span class="badge-warning">Menunggu persetujuan</span>
+                                    @endif
+                                </td>
 
-                        </tr>
-                        <tr>
-                            <td>1.</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td><span class="badge-success">Terdaftar PIRT</span></td>
-                            <td class="action">
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/edit-2.png') }}" alt="Edit">
-                                </a>
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/eye.png') }}" alt="Lihat">
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>1.</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td><span class="badge-success">Terdaftar PIRT</span></td>
-                            <td class="action">
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/edit-2.png') }}" alt="Edit">
-                                </a>
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/eye.png') }}" alt="Lihat">
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>1.</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td><span class="badge-success">Terdaftar PIRT</span></td>
-                            <td class="action">
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/edit-2.png') }}" alt="Edit">
-                                </a>
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/eye.png') }}" alt="Lihat">
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>1.</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td>Tidak</td>
-                            <td><span class="badge-warning">Menunggu persetujuan</span></td>
-                            <td class="action">
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/edit-2.png') }}" alt="Edit">
-                                </a>
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/eye.png') }}" alt="Lihat">
-                                </a>
-                            </td>
-                        </tr>
+                                <td class="action">
+                                    <a href="#" class="icon-btn open-modal"
+                                        data-target="editModal-{{ $item->id }}">
+                                        <img src="{{ asset('img/edit-2.png') }}" alt="Edit">
+                                    </a>
+
+
+                                    <a href="#" class="icon-btn">
+                                        <img src="{{ asset('img/eye.png') }}" alt="Lihat">
+                                    </a>
+                                </td>
+                            </tr>
+                            <div class="modal-overlay" id="editModal-{{ $item->id }}">
+                                <div class="modal-edit-produk">
+
+                                    <h2>Edit Produk</h2>
+
+                                    <form method="POST" action="{{ route('produk.usaha.update', $item->id) }}">
+                                        @csrf
+                                        @method('PUT')
+
+                                        <div class="form-group">
+                                            <label>Nama Produk</label>
+                                            <input type="text" name="nama_produk" value="{{ $item->nama_produk }}">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Komposisi</label>
+                                            <textarea name="komposisi" rows="3">{{ $item->komposisi }}</textarea>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Kemasan</label>
+                                            <input type="text" name="kemasan" value="{{ $item->kemasan }}">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Berat Bersih</label>
+                                            <input type="number" name="berat_bersih" value="{{ $item->berat_bersih }}">
+                                        </div>
+
+                                        <div class="modal-action">
+                                            <a href="#" class="btn-cancel close-modal">Batal</a>
+                                            <button type="submit" class="btn-submit">Simpan</button>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                        @empty
+                            <tr>
+                                <td colspan="8" style="text-align:center; padding:20px;">
+                                    Belum ada produk
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
-
-            <!-- MODAL EDIT PRODUK -->
-            <div class="modal-overlay" id="editProdukModal">
-                <div class="modal-edit-produk">
-
-                    <h2>Edit Produk</h2>
-
-                    <div class="form-group">
-                        <label>Nama Produk</label>
-                        <input type="text" value="DAPUR NUSANTARA">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Komposisi</label>
-                        <textarea rows="3">Jl. Kamboja Atas, RT3/RW4, Pesanggrahan, Kec. Batu, Kota Batu, Jawa Timur 65313</textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Jenis Kemasan</label>
-                        <input type="text" value="DAPUR NUSANTARA">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Berat Bersih</label>
-                        <input type="text" value="DAPUR NUSANTARA">
-                    </div>
-
-                    <button class="btn-submit">Edit</button>
-
-                </div>
-            </div>
-
 
             <!-- FOOTER -->
             <div class="table-footer">
@@ -196,9 +151,6 @@
     </div>
 
 
-    </div>
-
-
     <style>
         /* CARD */
         .table-card {
@@ -209,8 +161,8 @@
         }
 
         /* =====================
-                           TOP BAR
-                        ===================== */
+                                                               TOP BAR
+                                                            ===================== */
         .table-top {
             display: flex;
             justify-content: space-between;
@@ -255,8 +207,8 @@
         }
 
         /* =====================
-                           BUTTON TAMBAH
-                        ===================== */
+                                                               BUTTON TAMBAH
+                                                            ===================== */
         .btn-primary {
             height: 40px;
             background: #083b6f;
@@ -396,8 +348,8 @@
 
 
         /* =====================
-                                   TABLE FOOTER
-                                ===================== */
+                                                                       TABLE FOOTER
+                                                                    ===================== */
         .table-footer {
             margin-top: 12px;
             padding: 14px 16px;
@@ -438,8 +390,8 @@
         }
 
         /* =====================
-                                   PAGINATION WRAPPER
-                                ===================== */
+                                                                       PAGINATION WRAPPER
+                                                                    ===================== */
         .pagination-wrapper {
             display: flex;
             align-items: center;
@@ -515,8 +467,8 @@
         }
 
         /* =====================
-                   MODAL EDIT PRODUK
-                ===================== */
+                                                       MODAL EDIT PRODUK
+                                                    ===================== */
         /* MODAL OVERLAY (WAJIB) */
         .modal-overlay {
             position: fixed;
@@ -580,21 +532,94 @@
     </style>
 
     <script>
-        /* MODAL EDIT PRODUK (ICON PENSIL) */
-        const editProdukButtons = document.querySelectorAll('.btn-edit-produk');
-        const editProdukModal = document.getElementById('editProdukModal');
+        // ===============================
+        // EVENT DELEGATION MODAL (FINAL)
+        // ===============================
+        document.addEventListener('click', function(e) {
 
-        editProdukButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                editProdukModal.style.display = 'flex';
-            });
-        });
+            // OPEN MODAL
+            const openBtn = e.target.closest('.open-modal');
+            if (openBtn) {
+                e.preventDefault();
+                const target = openBtn.dataset.target;
+                const modal = document.getElementById(target);
+                if (modal) modal.style.display = 'flex';
+                return;
+            }
 
-        editProdukModal.addEventListener('click', (e) => {
-            if (e.target === editProdukModal) {
-                editProdukModal.style.display = 'none';
+            // CLOSE MODAL (BUTTON)
+            const closeBtn = e.target.closest('.close-modal');
+            if (closeBtn) {
+                e.preventDefault();
+                closeBtn.closest('.modal-overlay').style.display = 'none';
+                return;
+            }
+
+            // CLOSE MODAL (OVERLAY)
+            if (e.target.classList.contains('modal-overlay')) {
+                e.target.style.display = 'none';
             }
         });
-    </script>
 
+
+        // ===============================
+        // SEARCH REALTIME (MODAL TETAP AKTIF)
+        // ===============================
+        const searchInput = document.getElementById('search');
+        const tbody = document.getElementById('produk-body');
+
+        searchInput.addEventListener('keyup', function() {
+            const keyword = this.value;
+
+            fetch(`/produk?q=${encodeURIComponent(keyword)}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    tbody.innerHTML = '';
+
+                    if (data.length === 0) {
+                        tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align:center;padding:20px">
+                            Data tidak ditemukan
+                        </td>
+                    </tr>
+                `;
+                        return;
+                    }
+
+                    data.forEach((item, index) => {
+                        tbody.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${item.nama_produk}</td>
+                        <td>{{ $usaha->jenis_usaha }}</td>
+                        <td>${item.komposisi}</td>
+                        <td>${item.berat_bersih} gr</td>
+                        <td>${item.kemasan}</td>
+                        <td>
+                            ${
+                                item.verifikasi && item.verifikasi.hasil_verifikasi === 'disetujui'
+                                ? '<span class="badge-success">Terdaftar PIRT</span>'
+                                : '<span class="badge-warning">Menunggu persetujuan</span>'
+                            }
+                        </td>
+                        <td class="action">
+                            <a href="#" class="icon-btn open-modal"
+                               data-target="editModal-${item.id}">
+                                <img src="{{ asset('img/edit-2.png') }}" alt="Edit">
+                            </a>
+                            <a href="#" class="icon-btn">
+                                <img src="{{ asset('img/eye.png') }}" alt="Lihat">
+                            </a>
+                        </td>
+                    </tr>
+                `;
+                    });
+                });
+        });
+    </script>
 @endsection

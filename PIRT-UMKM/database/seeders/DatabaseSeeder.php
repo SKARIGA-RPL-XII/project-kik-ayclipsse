@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         /* ======================
-           USER
+           USERS
         ====================== */
         $adminId = DB::table('users')->insertGetId([
             'name' => 'Admin PIRT',
@@ -25,103 +25,131 @@ class DatabaseSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        $userId = DB::table('users')->insertGetId([
-            'name' => 'Raysha',
-            'email' => 'user@pirt.test',
+        $petugasId = DB::table('users')->insertGetId([
+            'name' => 'Petugas Inspeksi',
+            'email' => 'petugas@pirt.test',
             'password' => Hash::make('password'),
-            'role' => 'user',
+            'role' => 'admin',
             'alamat' => 'Kota Batu',
-            'no_hp' => '0899999999',
+            'no_hp' => '0811111111',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        /* ======================
-           USAHA
-        ====================== */
-        $usahaId = DB::table('usaha')->insertGetId([
-            'user_id' => $userId,
-            'nama_usaha' => 'DAPUR NUSANTARA',
-            'alamat_usaha' => 'Jl. Kamboja Atas, Kota Batu',
-            'jenis_usaha' => 'Makanan / Minuman',
-            'izin_usaha' => 'PIRT-123456',
-            'tanggal_berdiri' => '2015-01-14',
-            'hasil_inspeksi' => 'Memenuhi Syarat',
-            'status' => 'aktif',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        /* ======================
-           PRODUK
-        ====================== */
-        $produkId = DB::table('produk')->insertGetId([
-            'usaha_id' => $usahaId,
-            'nama_produk' => 'Jamu Djeng Nita',
-            'komposisi' => 'Jahe, kunyit, gula aren',
-            'berat_bersih' => 250,
-            'kemasan' => 'Botol',
-            'tanggal_input' => now(),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        /* ======================
-           VARIABEL INSPEKSI
-        ====================== */
-        $variabel = [
-            [
-                'kode_kategori' => 'A',
-                'nama_kategori' => 'Lokasi dan Lingkungan Produksi',
-                'nomor_variabel' => 1,
-                'deskripsi' => 'Lingkungan produksi bersih dan terawat',
-                'bobot' => 2,
-            ],
-            [
-                'kode_kategori' => 'B',
-                'nama_kategori' => 'Bangunan dan Fasilitas',
-                'nomor_variabel' => 2,
-                'deskripsi' => 'Bangunan layak dan mudah dibersihkan',
-                'bobot' => 3,
-            ],
-        ];
-
-        foreach ($variabel as $v) {
-            DB::table('variabel')->insert([
-                ...$v,
+        $users = [];
+        for ($i = 1; $i <= 5; $i++) {
+            $users[] = DB::table('users')->insertGetId([
+                'name' => "UMKM User {$i}",
+                'email' => "user{$i}@pirt.test",
+                'password' => Hash::make('password'),
+                'role' => 'user',
+                'alamat' => 'Kota Batu',
+                'no_hp' => '08900000' . $i,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
         }
 
         /* ======================
-           INSPEKSI
+           USAHA
         ====================== */
-        $inspeksiId = DB::table('inspeksi')->insertGetId([
-            'usaha_id' => $usahaId,
-            'petugas_id' => $adminId,
-            'tanggal_inspeksi' => Carbon::now(),
-            'total_nilai' => 5,
-            'kesimpulan' => 'Memenuhi syarat PIRT',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        /* ======================
-           INSPEKSI DETAIL
-        ====================== */
-        $variabelList = DB::table('variabel')->get();
-
-        foreach ($variabelList as $item) {
-            DB::table('inspeksi_detail')->insert([
-                'inspeksi_id' => $inspeksiId,
-                'variabel_id' => $item->id,
-                'jawaban' => 'tidak',
-                'nilai' => $item->bobot,
-                'bobot' => $item->bobot,
+        $usahaList = [];
+        foreach ($users as $index => $userId) {
+            $usahaList[] = DB::table('usaha')->insertGetId([
+                'user_id' => $userId,
+                'nama_usaha' => 'Usaha Kuliner ' . ($index + 1),
+                'alamat_usaha' => 'Jl. Mawar No.' . ($index + 1),
+                'jenis_usaha' => 'Makanan / Minuman',
+                'izin_usaha' => 'PIRT-00' . ($index + 1),
+                'tanggal_berdiri' => Carbon::now()->subYears(rand(3, 10)),
+                'hasil_inspeksi' => 'Memenuhi Syarat',
+                'status' => 'aktif',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
+        }
+
+        /* ======================
+           PRODUK
+        ====================== */
+        foreach ($usahaList as $usahaId) {
+            for ($i = 1; $i <= 3; $i++) {
+                DB::table('produk')->insert([
+                    'usaha_id' => $usahaId,
+                    'nama_produk' => "Produk {$i}",
+                    'komposisi' => 'Bahan alami pilihan',
+                    'berat_bersih' => rand(100, 500),
+                    'kemasan' => 'Plastik / Botol',
+                    'tanggal_input' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        /* ======================
+           VARIABEL INSPEKSI
+        ====================== */
+        $variabel = [
+            ['A', 'Lokasi & Lingkungan', 1, 'Lingkungan bersih', 2],
+            ['A', 'Lokasi & Lingkungan', 2, 'Bebas pencemaran', 2],
+            ['B', 'Bangunan', 3, 'Bangunan layak', 3],
+            ['B', 'Bangunan', 4, 'Ventilasi cukup', 2],
+            ['C', 'Peralatan', 5, 'Peralatan bersih', 3],
+            ['C', 'Peralatan', 6, 'Peralatan food grade', 2],
+            ['D', 'Higiene', 7, 'Pekerja bersih', 3],
+            ['D', 'Higiene', 8, 'Cuci tangan tersedia', 2],
+        ];
+
+        foreach ($variabel as $v) {
+            DB::table('variabel')->insert([
+                'kode_kategori' => $v[0],
+                'nama_kategori' => $v[1],
+                'nomor_variabel' => $v[2],
+                'deskripsi' => $v[3],
+                'bobot' => $v[4],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        /* ======================
+           INSPEKSI & DETAIL
+        ====================== */
+        $variabelList = DB::table('variabel')->get();
+
+        foreach ($usahaList as $usahaId) {
+            $inspeksiId = DB::table('inspeksi')->insertGetId([
+                'usaha_id' => $usahaId,
+                'petugas_id' => $petugasId,
+                'tanggal_inspeksi' => Carbon::now()->subDays(rand(1, 60)),
+                'total_nilai' => 0,
+                'kesimpulan' => 'Memenuhi Syarat',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            $totalNilai = 0;
+
+            foreach ($variabelList as $item) {
+                $jawaban = rand(0, 1) ? 'ya' : 'tidak';
+                $nilai = $jawaban === 'ya' ? $item->bobot : 0;
+                $totalNilai += $nilai;
+
+                DB::table('inspeksi_detail')->insert([
+                    'inspeksi_id' => $inspeksiId,
+                    'variabel_id' => $item->id,
+                    'jawaban' => $jawaban,
+                    'nilai' => $nilai,
+                    'bobot' => $item->bobot,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+
+            DB::table('inspeksi')
+                ->where('id', $inspeksiId)
+                ->update(['total_nilai' => $totalNilai]);
         }
     }
 }

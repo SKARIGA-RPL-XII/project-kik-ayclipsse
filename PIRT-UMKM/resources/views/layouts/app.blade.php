@@ -98,45 +98,66 @@
                     <span>Dashboard Kit</span>
                 </div>
 
-                {{-- SIDEBAR USER --}}
-                {{-- @if (($role ?? 'user') === 'user') --}}
-                <span>User</span>
+                {{-- ROLE CHECK --}}
+                @auth
+                    {{-- ================= USER ================= --}}
+                    @if (auth()->user()->role === 'user')
+                        <ul class="sidebar-menu">
+                            <li class="{{ request()->is('dashboard') ? 'active' : '' }}">
+                                <a href="{{ url('/dashboard') }}">Dashboard</a>
+                            </li>
+                            <li class="{{ request()->is('profil') ? 'active' : '' }}">
+                                <a href="{{ url('/profil') }}">Profil Usaha</a>
+                            </li>
+                            <li class="{{ request()->is('produk') ? 'active' : '' }}">
+                                <a href="{{ url('/produk') }}">Produk Usaha</a>
+                            </li>
+                        </ul>
+                    @endif
 
-                <ul class="sidebar-menu">
-                    <li class="{{ request()->is('dashboard') ? 'active' : '' }}">
-                        <a href="{{ url('/dashboard') }}">Dashboard</a>
-                    </li>
-                    <li class="{{ request()->is('profil') ? 'active' : '' }}">
-                        <a href="{{ url('/profil') }}">Profil Usaha</a>
-                    </li>
-                    <li class="{{ request()->is('produk') ? 'active' : '' }}">
-                        <a href="{{ url('/produk') }}">Produk Usaha</a>
-                    </li>
-                </ul>
-
-                {{-- SIDEBAR ADMIN --}}
-                <span>Admin</span>
-                <ul class="sidebar-menu">
-                    <li class="{{ request()->is('admin/dashboard') ? 'active' : '' }}">
-                        <a href="{{ url('/admin/dashboard') }}">Dashboard</a>
-                    </li>
-                    <li class="{{ request()->is('admin/usaha') ? 'active' : '' }}">
-                        <a href="{{ url('/admin/usaha') }}">Usaha</a>
-                    </li>
-                    <li class="{{ request()->is('admin/produk') ? 'active' : '' }}">
-                        <a href="{{ url('/admin/produk') }}">Produk Usaha</a>
-                    </li>
-                    <li class="{{ request()->is('admin/persetujuan') ? 'active' : '' }}">
-                        <a href="{{ url('/admin/persetujuan') }}">Persetujuan</a>
-                    </li>
-                </ul>
+                    {{-- ================= ADMIN ================= --}}
+                    @if (auth()->user()->role === 'admin')
+                        <ul class="sidebar-menu">
+                            <li class="{{ request()->is('admin/dashboard') ? 'active' : '' }}">
+                                <a href="{{ url('/admin/dashboard') }}">Dashboard</a>
+                            </li>
+                            <li class="{{ request()->is('admin/usaha') ? 'active' : '' }}">
+                                <a href="{{ url('/admin/usaha') }}">Usaha</a>
+                            </li>
+                            <li class="{{ request()->is('admin/produk') ? 'active' : '' }}">
+                                <a href="{{ url('/admin/produk') }}">Produk Usaha</a>
+                            </li>
+                            <li class="{{ request()->is('admin/persetujuan') ? 'active' : '' }}">
+                                <a href="{{ url('/admin/persetujuan') }}">Persetujuan</a>
+                            </li>
+                        </ul>
+                    @endif
+                @endauth
             </div>
 
+            {{-- LOGOUT --}}
             <div class="sidebar-footer">
-                Log Out
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit"
+                        style="
+                background:none;
+                border:none;
+                color:#fff;
+                cursor:pointer;
+                width:100%;
+                text-align:left;
+                font-size:14px;
+                font-weight:500;
+            ">
+                        Log Out
+                    </button>
+                </form>
             </div>
+
 
         </aside>
+
 
         <!-- MAIN -->
         <main class="main-content">

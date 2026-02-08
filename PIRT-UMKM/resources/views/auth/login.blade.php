@@ -95,12 +95,39 @@
             position: absolute;
         }
 
-        .d1 { top: -11px; left: 50%; transform: translateX(-50%); }
-        .d2 { right: -11px; top: 50%; transform: translateY(-50%); }
-        .d3 { bottom: -11px; left: 50%; transform: translateX(-50%); }
-        .d4 { left: -11px; top: 50%; transform: translateY(-50%); }
-        .d5 { top: 45px; right: 70px; }
-        .d6 { bottom: 45px; left: 70px; }
+        .d1 {
+            top: -11px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .d2 {
+            right: -11px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .d3 {
+            bottom: -11px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .d4 {
+            left: -11px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .d5 {
+            top: 45px;
+            right: 70px;
+        }
+
+        .d6 {
+            bottom: 45px;
+            left: 70px;
+        }
 
         .desc {
             font-size: 14px;
@@ -249,18 +276,30 @@
             <h2>Masuk Akun Anda</h2>
             <p class="subtitle">Masukkan email dan kata sandi yang telah terdaftar</p>
 
-            <form>
+            <form method="POST" action="{{ route('proses.login') }}">
+                @csrf
+
                 <label>Email</label>
-                <input type="email" placeholder="contoh@gmail.com">
+                <input type="email" name="email" placeholder="contoh@gmail.com" value="{{ old('email') }}"
+                    required>
+
+                @error('email')
+                    <small style="color:red">{{ $message }}</small>
+                @enderror
 
                 <label>Password</label>
                 <div class="password">
-                    <input type="password" placeholder="********">
-                    <span class="eye">👁</span>
+                    <input type="password" name="password" id="password" placeholder="********" required>
+                    <span class="eye" onclick="togglePassword()">👁</span>
                 </div>
+
+                @error('password')
+                    <small style="color:red">{{ $message }}</small>
+                @enderror
 
                 <button type="submit">Masuk</button>
             </form>
+
 
             <p class="login-text">
                 Belum memiliki akun?
@@ -270,5 +309,11 @@
 
     </div>
 </body>
+<script>
+    function togglePassword() {
+        const input = document.getElementById('password');
+        input.type = input.type === 'password' ? 'text' : 'password';
+    }
+</script>
 
 </html>

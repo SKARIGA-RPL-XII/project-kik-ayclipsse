@@ -12,24 +12,12 @@
     <div class="card">
 
         <div class="table-card">
-            <!-- TABLE HEADER -->
-            <div class="table-header">
-                <button class="nav-btn">
-                    ‹
-                </button>
-
-                <h3>Tabel Usaha</h3>
-
-                <button class="nav-btn">
-                    ›
-                </button>
-            </div>
 
             <!-- TOP BAR -->
             <div class="table-top">
                 <div class="search-wrapper">
                     <img src="{{ asset('img/search.png') }}" class="search-icon" alt="search">
-                    <input type="text" placeholder="Cari Data...">
+                    <input type="text" id="search" placeholder="Cari Data..." autocomplete="off">
                 </div>
             </div>
 
@@ -40,50 +28,51 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Nama Usaha</th>
                             <th>Nama Produk</th>
                             <th>Jenis Produk</th>
+                            <th>Komposisi</th>
+                            <th>Berat Bersih</th>
+                            <th>Kemasan</th>
                             <th>Verifikasi</th>
                             <th></th>
                         </tr>
                     </thead>
 
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>DAPUR NUSANTARA</td>
-                            <td>Jamu Temulawak</td>
-                            <td>Minuman</td>
-                            <td>
-                                <span class="badge-success">Terdaftar PIRT</span>
-                            </td>
-                            <td class="action">
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/eye.png') }}">
-                                </a>
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/trash.png') }}">
-                                </a>
-                            </td>
-                        </tr>
+                    <tbody id="produk-body">
+                        @forelse ($produk as $i => $item)
+                            <tr>
+                                <td>{{ $i + 1 }}</td>
+                                <td>{{ $item->nama_produk }}</td>
+                                <td>{{ $item->usaha->jenis_usaha ?? '-' }}</td>
+                                <td>{{ $item->komposisi }}</td>
+                                <td>{{ $item->berat_bersih }} gr</td>
+                                <td>{{ $item->kemasan }}</td>
+                                <td>
+                                    @php
+                                        $verifikasi = $item->dokumen->first()?->verifikasi;
+                                    @endphp
 
-                        <tr>
-                            <td>2</td>
-                            <td>CEMALICIOUS</td>
-                            <td>Keripik Singkong Original</td>
-                            <td>Makanan</td>
-                            <td>
-                                <span class="badge-warning">Menunggu persetujuan</span>
-                            </td>
-                            <td class="action">
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/edit-2.png') }}">
-                                </a>
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/trash.png') }}">
-                                </a>
-                            </td>
-                        </tr>
+                                    @if ($verifikasi && $verifikasi->hasil_verifikasi === 'disetujui')
+                                        <span class="badge-success">Terdaftar PIRT</span>
+                                    @else
+                                        <span class="badge-warning">Menunggu persetujuan</span>
+                                    @endif
+
+                                </td>
+                                <td class="action">
+                                    <a href="javascript:void(0)" class="icon-btn btn-edit-produk"
+                                        data-id="{{ $item->id }}">
+                                        <img src="{{ asset('img/eye.png') }}">
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="8" style="text-align:center;padding:20px">
+                                    Tidak ada data produk
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
 
                 </table>
@@ -118,8 +107,43 @@
 
     </div>
 
+    <div class="modal-overlay" id="editProdukModal">
+        <div class="modal-edit-produk">
 
+            <div class="modal-header">
+                <h2>Detail Produk Usaha</h2>
+                <small>Produk Usaha › Detail Produk</small>
+            </div>
+
+            <div class="detail-grid">
+                <div>Nama Usaha</div>
+                <div>: <span id="m-nama-usaha"></span></div>
+
+                <div>Nama Produk</div>
+                <div>: <span id="m-nama-produk"></span></div>
+
+                <div>Jenis Produk</div>
+                <div>: <span id="m-jenis-produk"></span></div>
+
+                <div>Komposisi</div>
+                <div class="komposisi" id="m-komposisi"></div>
+
+                <div>Berat Bersih</div>
+                <div>: <span id="m-berat"></span> gr</div>
+
+                <div>Kemasan</div>
+                <div>: <span id="m-kemasan"></span></div>
+
+                <div>Verifikasi</div>
+                <div id="m-verifikasi"></div>
+
+                <div>Tanggal Input</div>
+                <div>: <span id="m-tanggal"></span></div>
+            </div>
+
+        </div>
     </div>
+
 
 
     <style>
@@ -132,8 +156,8 @@
         }
 
         /* =====================
-                               TOP BAR
-                            ===================== */
+                                                                                               TOP BAR
+                                                                                            ===================== */
         .table-top {
             display: flex;
             justify-content: space-between;
@@ -178,8 +202,8 @@
         }
 
         /* =====================
-                               BUTTON TAMBAH
-                            ===================== */
+                                                                                               BUTTON TAMBAH
+                                                                                            ===================== */
         .btn-primary {
             height: 40px;
             background: #083b6f;
@@ -197,47 +221,6 @@
             background: #062f57;
         }
 
-        /* =====================
-       TABLE HEADER
-    ===================== */
-        .table-header {
-            background: #e9eef3;
-            border-radius: 8px;
-            padding: 12px 16px;
-            margin-bottom: 14px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .table-header h3 {
-            margin: 0;
-            font-size: 18px;
-            font-weight: 500;
-            color: #000000;
-        }
-
-        /* NAV BUTTON */
-        .nav-btn {
-            width: 34px;
-            height: 34px;
-            border-radius: 6px;
-            background: #083b6f;
-            color: #ffffff;
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .nav-btn:hover {
-            background: #062f57;
-        }
-
         /* TABLE CONTAINER */
         .table-container {
             border: 1px solid #cbd5e1;
@@ -250,7 +233,6 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 13px;
-
         }
 
         .custom-table thead {
@@ -277,7 +259,6 @@
         .custom-table tbody tr:last-child {
             border-bottom: none;
         }
-
 
         /* BADGE */
         .badge-success {
@@ -314,22 +295,14 @@
         }
 
         .badge-warning::before {
-            content: "⟳";
-            border: 1px solid #94a3b8;
-            border-radius: 9999px;
-            padding: 2px 4px;
-            font-size: 8px;
+            content: "⏳";
         }
-
 
         /* ACTION */
         .action {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
+            font-size: 14px;
+            white-space: nowrap;
         }
-
 
         /* FOOTER */
         .table-footer {
@@ -368,6 +341,10 @@
             height: 16px;
         }
 
+
+        /* =====================
+                                                                                                       TABLE FOOTER
+                                                                                                    ===================== */
         .table-footer {
             margin-top: 12px;
             padding: 14px 16px;
@@ -408,8 +385,8 @@
         }
 
         /* =====================
-                                       PAGINATION WRAPPER
-                                    ===================== */
+                                                                                                       PAGINATION WRAPPER
+                                                                                                    ===================== */
         .pagination-wrapper {
             display: flex;
             align-items: center;
@@ -483,5 +460,224 @@
             background: #003366;
             color: #ffffff;
         }
+
+        /* =====================
+                                                                                   MODAL OVERLAY
+                                                                                ===================== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        /* =====================
+                                                                                   MODAL DETAIL PRODUK
+                                                                                ===================== */
+        .modal-edit-produk {
+            background: #ffffff;
+            width: 820px;
+            max-width: 95%;
+            padding: 24px;
+            border-radius: 10px;
+        }
+
+        .modal-edit-produk h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #083b6f;
+        }
+
+        .modal-subtitle {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+
+        .modal-card {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .modal-card h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .modal-card h3 span {
+            font-size: 12px;
+            color: #64748b;
+            margin-left: 6px;
+        }
+
+        /* HEADER MODAL */
+        .modal-header h2 {
+            font-size: 20px;
+            color: #083b6f;
+        }
+
+        .modal-header small {
+            color: #64748b;
+        }
+
+        /* USAHA CARD */
+        .usaha-header {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .avatar {
+            width: 56px;
+            height: 56px;
+            background: #d1d5db;
+            border-radius: 50%;
+        }
+
+        .usaha-info {
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 6px 12px;
+            font-size: 13px;
+        }
+
+        /* BUTTON */
+        .btn-detail-produk {
+            margin-top: 16px;
+            background: #083b6f;
+            color: #fff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .btn-edit-table {
+            background: #16a34a;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 8px 12px;
+            font-size: 13px;
+            color: #374151;
+        }
+
+        .komposisi {
+            line-height: 1.6;
+        }
+
+        /* SECTION ROW INSPEKSI */
+        .inspeksi-table .section {
+            background: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .inspeksi-table td:nth-child(1),
+        .inspeksi-table td:nth-child(3),
+        .inspeksi-table td:nth-child(4),
+        .inspeksi-table td:nth-child(5) {
+            text-align: center;
+        }
     </style>
+    <script>
+        document.addEventListener('click', function(e) {
+
+            const btn = e.target.closest('.btn-edit-produk');
+            if (!btn) return;
+
+            const id = btn.dataset.id;
+
+            fetch(`{{ url('/admin/produk') }}/${id}/modal`)
+                .then(res => res.json())
+                .then(data => {
+
+                    document.getElementById('m-nama-usaha').innerText = data.nama_usaha;
+                    document.getElementById('m-nama-produk').innerText = data.nama_produk;
+                    document.getElementById('m-jenis-produk').innerText = data.jenis_produk;
+                    document.getElementById('m-komposisi').innerText = data.komposisi;
+                    document.getElementById('m-berat').innerText = data.berat_bersih;
+                    document.getElementById('m-kemasan').innerText = data.kemasan;
+                    document.getElementById('m-tanggal').innerText = data.tanggal_input ?? '-';
+
+                    document.getElementById('m-verifikasi').innerHTML =
+                        data.verifikasi === 'disetujui' ?
+                        '<span class="badge-success">Terdaftar PIRT</span>' :
+                        '<span class="badge-warning">Menunggu Persetujuan</span>';
+
+                    document.getElementById('editProdukModal').style.display = 'flex';
+                });
+        });
+
+        // klik overlay untuk tutup
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal-overlay')) {
+                e.target.style.display = 'none';
+            }
+        });
+        const searchInput = document.getElementById('search');
+        const tbody = document.getElementById('produk-body');
+
+        searchInput.addEventListener('keyup', function() {
+            fetch(`{{ route('admin.produk') }}?q=${this.value}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    tbody.innerHTML = '';
+
+                    if (data.length === 0) {
+                        tbody.innerHTML = `
+                <tr>
+                    <td colspan="8" style="text-align:center;padding:20px">
+                        Data tidak ditemukan
+                    </td>
+                </tr>`;
+                        return;
+                    }
+
+                    data.forEach((item, index) => {
+                        tbody.innerHTML += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${item.nama_produk}</td>
+                    <td>${item.jenis_usaha}</td>
+                    <td>${item.komposisi}</td>
+                    <td>${item.berat_bersih} gr</td>
+                    <td>${item.kemasan}</td>
+                    <td>
+                        ${
+                            item.verifikasi === 'disetujui'
+                            ? '<span class="badge-success">Terdaftar PIRT</span>'
+                            : '<span class="badge-warning">Menunggu persetujuan</span>'
+                        }
+                    </td>
+                    <td class="action">
+                        <a href="javascript:void(0)"
+                           class="icon-btn btn-edit-produk"
+                           data-id="${item.id}">
+                            <img src="{{ asset('img/eye.png') }}">
+                        </a>
+                    </td>
+                </tr>
+            `;
+                    });
+                });
+        });
+    </script>
+
+
 @endsection

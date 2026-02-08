@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="dashboard-header">
-        <h1>Selamat Datang Kembali <span>Raysha!</span></h1>
+        <h1>Selamat Datang Kembali <span>{{ auth()->user()->name }}</span></h1>
         <p>Kelola pendaftaran PIRT dan produk usahamu di sini.</p>
     </div>
 
@@ -13,29 +13,37 @@
             <div class="business-avatar"></div>
 
             <div class="business-info">
-                <h2>JAMU DJENG NITA</h2>
-                <span class="category">Makanan / Minuman</span>
+                <h2>{{ $usaha->nama_usaha }}</h2>
+                <span class="category">{{ $usaha->jenis_usaha }}</span>
 
                 <table>
                     <tr>
                         <td>Nama Usaha</td>
-                        <td>: DAPUR NUSANTARA</td>
+                        <td>: {{ $usaha->nama_usaha }}</td>
                     </tr>
                     <tr>
                         <td>Alamat Usaha</td>
-                        <td>: Jl. Kamboja Atas, RT3/RW4, Pesanggrahan, Kec. Batu, Kota Batu, Jawa Timur 65313</td>
+                        <td>: {{ $usaha->alamat_usaha }}</td>
                     </tr>
                     <tr>
                         <td>Jenis Usaha</td>
-                        <td>: Makanan/Minuman</td>
+                        <td>: {{ $usaha->jenis_usaha }}</td>
                     </tr>
                     <tr>
                         <td>Izin Usaha</td>
-                        <td>: <span class="badge-success">izin usaha telah disetujui</span></td>
+                        <td>:
+                            @if ($usaha->izin_usaha === 'disetujui')
+                                <span class="badge-success">izin usaha telah disetujui</span>
+                            @else
+                                <span class="badge-danger">belum disetujui</span>
+                            @endif
+                        </td>
                     </tr>
                     <tr>
                         <td>Tanggal Berdiri</td>
-                        <td>: 14 Januari 2015</td>
+                        <td>: {{ \Carbon\Carbon::parse($usaha->tanggal_berdiri)->translatedFormat('d F Y') }}</td>
+
+
                     </tr>
                     <tr>
                         <td>Hasil Inspeksi</td>
@@ -55,7 +63,7 @@
     </div>
 
     <!-- MODAL INSPEKSI -->
-    <div class="modal-overlay" id="inspeksiModal">
+    {{-- <div class="modal-overlay" id="inspeksiModal">
         <div class="modal-inspeksi">
             <div class="inspeksi-container">
                 <h2>Tabel Inspeksi</h2>
@@ -75,44 +83,31 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="section">
-                            <td>A.</td>
-                            <td colspan="4">LOKASI DAN LINGKUNGAN PRODUKSI</td>
-                        </tr>
-                        <tr>
-                            <td>1.</td>
-                            <td>Lokasi dan lingkungan IRTP tidak terawat, kotor dan berdebu</td>
-                            <td>2</td>
-                            <td>Tidak</td>
-                            <td>2</td>
-                        </tr>
+                        @php $currentKategori = null; @endphp
 
-                        <tr class="section">
-                            <td>B.</td>
-                            <td colspan="4">BANGUNAN DAN FASILITAS</td>
-                        </tr>
-                        <tr>
-                            <td>2.</td>
-                            <td>Ruang produksi sempit, sukar dibersihkan</td>
-                            <td>1</td>
-                            <td>Tidak</td>
-                            <td>1</td>
-                        </tr>
-                        <tr>
-                            <td>3.</td>
-                            <td>Lantai, dinding, dan langit-langit tidak terawat</td>
-                            <td>3</td>
-                            <td>Ya</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <td>4.</td>
-                            <td>Ventilasi, pintu, dan jendela tidak terawat</td>
-                            <td>2</td>
-                            <td>Tidak</td>
-                            <td>2</td>
-                        </tr>
+                        @foreach ($usaha->inspeksi->details as $i => $detail)
+                            @if ($currentKategori !== $detail->variable->kode_kategori)
+                                <tr class="section">
+                                    <td>{{ $detail->variable->kode_kategori }}</td>
+                                    <td colspan="4">{{ $detail->variable->nama_kategori }}</td>
+                                </tr>
+                                @php $currentKategori = $detail->variable->kode_kategori; @endphp
+                            @endif
+
+                            <tr>
+                                <td>{{ $detail->variable->nomor_variabel }}</td>
+                                <td>{{ $detail->variable->deskripsi }}</td>
+                                <td>{{ $detail->bobot }}</td>
+                                <td>{{ ucfirst($detail->jawaban) }}</td>
+                                <td>{{ $detail->nilai }}</td>
+                            </tr>
+                        @endforeach
+                        @if (!$usaha)
+                            <p>Data usaha belum tersedia</p>
+                        @endif
+
                     </tbody>
+
                 </table>
 
                 <div class="pagination">
@@ -137,36 +132,46 @@
 
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <!-- MODAL -->
     <div class="modal-overlay" id="editModal">
         <div class="modal">
             <h2>Edit Profil Usaha</h2>
 
-            <div class="form-group">
-                <label>Nama Usaha</label>
-                <input type="text" value="DAPUR NUSANTARA">
-            </div>
+            <form method="POST" action="{{ route('profil.usaha.update', $usaha->id) }}">
+                @csrf
+                @method('PUT')
 
-            <div class="form-group">
-                <label>Alamat</label>
-                <textarea rows="3">Jl. Kamboja Atas, RT3/RW4, Pesanggrahan, Kec. Batu, Kota Batu, Jawa Timur 65313</textarea>
-            </div>
+                <div class="form-group">
+                    <label>Nama Usaha</label>
+                    <input type="text" name="nama_usaha" value="{{ old('nama_usaha', $usaha->nama_usaha) }}" required>
+                </div>
 
-            <div class="form-group">
-                <label>Jenis Usaha</label>
-                <input type="text" value="Minuman">
-            </div>
+                <div class="form-group">
+                    <label>Alamat Usaha</label>
+                    <textarea name="alamat_usaha" rows="3" required>{{ old('alamat_usaha', $usaha->alamat_usaha) }}</textarea>
+                </div>
 
-            <div class="form-group">
-                <label>Tanggal Berdiri</label>
-                <input type="date" value="2015-01-14">
-            </div>
+                <div class="form-group">
+                    <label>Jenis Usaha</label>
+                    <input type="text" name="jenis_usaha" value="{{ old('jenis_usaha', $usaha->jenis_usaha) }}"
+                        required>
+                </div>
 
-            <button class="btn-submit">Edit</button>
+                <div class="form-group">
+                    <label>Tanggal Berdiri</label>
+                    <input type="date" name="tanggal_berdiri"
+                        value="{{ old('tanggal_berdiri', $usaha->tanggal_berdiri) }}" required>
+                </div>
+
+                <div class="modal-action">
+                    <button type="submit" class="btn-submit">Simpan Perubahan</button>
+                </div>
+            </form>
         </div>
     </div>
+
 
     <style>
         /* HEADER */
