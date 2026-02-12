@@ -11,12 +11,13 @@ class Produk extends Model
     protected $fillable = [
         'usaha_id',
         'nama_produk',
+        'image',
         'komposisi',
         'berat_bersih',
         'kemasan',
-        'tanggal_input'
+        'tanggal_input',
+        'status'
     ];
-
     // produk milik satu usaha
     public function usaha()
     {
@@ -27,18 +28,5 @@ class Produk extends Model
     public function dokumen()
     {
         return $this->hasMany(Dokumen::class, 'produk_id');
-    }
-
-    // akses verifikasi lewat dokumen (PENTING)
-    public function verifikasi()
-    {
-        return $this->hasOneThrough(
-            Verifikasi::class,
-            Dokumen::class,
-            'produk_id',   // FK di dokumen
-            'dokumen_id',  // FK di verifikasi
-            'id',          // PK produk
-            'id'           // PK dokumen
-        );
     }
 }

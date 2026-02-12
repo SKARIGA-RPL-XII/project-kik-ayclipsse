@@ -12,7 +12,7 @@
                 <div class="dashboard-icon">🏢</div>
                 <div class="card-info">
                     <h4>Total Usaha</h4>
-                    <h2>1</h2>
+<h2>{{ $totalUsaha }}</h2>
                     <p>Usaha Terdaftar</p>
                 </div>
             </div>
@@ -21,7 +21,7 @@
                 <div class="dashboard-icon">📦</div>
                 <div class="card-info">
                     <h4>Total Produk</h4>
-                    <h2>7</h2>
+<h2>{{ $totalProduk }}</h2>
                     <p>Produk Terdaftar</p>
                 </div>
             </div>
@@ -30,7 +30,7 @@
                 <div class="dashboard-icon">✔️</div>
                 <div class="card-info">
                     <h4>Produk Disetujui</h4>
-                    <h2>6</h2>
+<h2>{{ $totalDisetujui }}</h2>
                     <p>Status PIRT</p>
                 </div>
             </div>

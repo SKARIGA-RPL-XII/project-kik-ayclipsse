@@ -3,89 +3,6 @@
 @section('title', 'Usaha')
 
 @section('content')
-
-    <div class="page-header">
-        <h1>Selamat Datang Kembali <span>Raysha!</span></h1>
-        <p>Kelola pendaftaran PIRT dan produk usahamu di sini.</p>
-    </div>
-
-    <div class="card">
-        <div class="table-card">
-
-            <div class="table-top">
-                <div class="search-wrapper">
-                    <img src="{{ asset('img/search.png') }}" class="search-icon">
-                    <input type="text" id="search" placeholder="Cari nama, jenis, alamat..." autocomplete="off">
-                </div>
-            </div>
-
-            <div class="table-container">
-                <table class="custom-table">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Logo Usaha</th>
-                            <th>Nama Usaha</th>
-                            <th>Jenis Usaha</th>
-                            <th>Alamat Usaha</th>
-                            <th>Status</th>
-                            <th width="120"></th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="usaha-body">
-                        @foreach ($usaha as $i => $item)
-                            <tr data-id="{{ $item->id }}">
-                                <td>{{ $usaha->firstItem() + $i }}</td>
-                                <td>{{ $item->nama_usaha }}</td>
-                                <td>{{ $item->jenis_usaha }}</td>
-                                <td>{{ $item->alamat_usaha }}</td>
-                                <td>
-                                    <span class="badge-success">
-                                        Terdaftar PIRT
-                                    </span>
-                                </td>
-                                <td class="action">
-                                    <a href="javascript:void(0)" class="icon-btn btn-detail">
-                                        <img src="{{ asset('img/eye.png') }}">
-                                    </a>
-                                    <a href="javascript:void(0)" class="icon-btn btn-delete"
-                                        data-url="{{ route('admin.usaha.destroy', $item->id) }}">
-                                        <img src="{{ asset('img/trash.png') }}">
-                                    </a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-
-        </div>
-    </div>
-
-
-    <div class="modal-overlay" id="deleteModal">
-        <div class="modal-boxdelete">
-            <div class="modal-icondelete warning">!</div>
-            <h3>Yakin ingin menghapus data ini?</h3>
-            <p>Data yang sudah dihapus tidak dapat dikembalikan.</p>
-
-            <div class="modal-actionsdelete">
-                <button class="btn-cancel" id="cancelDelete">Cancel</button>
-                <button class="btn-submit" id="confirmDelete">Submit</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="successModal">
-        <div class="modal-boxdelete">
-            <div class="modal-icondelete success">🗑</div>
-            <h3>Berhasil menghapus data</h3>
-            <p>Data telah dihapus secara permanen</p>
-        </div>
-    </div>
-
-
     <style>
         .table-card {
             background: #ffffff;
@@ -93,6 +10,7 @@
             padding: 16px;
             margin-top: 16px;
         }
+
         .table-top {
             display: flex;
             justify-content: space-between;
@@ -460,6 +378,21 @@
             cursor: pointer;
         }
 
+        .badge-danger {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            font-size: 11px;
+            border-radius: 20px;
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .badge-danger::before {
+            content: "✕";
+        }
+
         .btn-edit-table {
             background: #16a34a;
             color: #fff;
@@ -493,6 +426,92 @@
             text-align: center;
         }
     </style>
+    <div class="page-header">
+        <h1>Selamat Datang Kembali <span>Raysha!</span></h1>
+        <p>Kelola pendaftaran PIRT dan produk usahamu di sini.</p>
+    </div>
+
+    <div class="card">
+        <div class="table-card">
+
+            <div class="table-top">
+                <div class="search-wrapper">
+                    <img src="{{ asset('img/search.png') }}" class="search-icon">
+                    <input type="text" id="search" placeholder="Cari nama, jenis, alamat..." autocomplete="off">
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Usaha</th>
+                            <th>Jenis Usaha</th>
+                            <th>Alamat Usaha</th>
+                            <th>Status</th>
+                            <th width="120"></th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="usaha-body">
+                        @foreach ($usaha as $i => $item)
+                            <tr data-id="{{ $item->id }}">
+                                <td>{{ $usaha->firstItem() + $i }}</td>
+                                <td>{{ $item->nama_usaha }}</td>
+                                <td>{{ $item->jenis_usaha }}</td>
+                                <td>{{ $item->alamat_usaha }}</td>
+                                <td>
+                                    @if ($item->status === 'disetujui')
+                                        <span class="badge-success">Terdaftar PIRT</span>
+                                    @elseif ($item->status === 'ditolak')
+                                        <span class="badge-danger">Ditolak</span>
+                                    @else
+                                        <span class="badge-warning">Menunggu Persetujuan</span>
+                                    @endif
+                                </td>
+
+                                <td class="action">
+                                    <a href="javascript:void(0)" class="icon-btn btn-detail">
+                                        <img src="{{ asset('img/eye.png') }}">
+                                    </a>
+                                    <a href="javascript:void(0)" class="icon-btn btn-delete"
+                                        data-url="{{ route('admin.usaha.destroy', $item->id) }}">
+                                        <img src="{{ asset('img/trash.png') }}">
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-boxdelete">
+            <div class="modal-icondelete warning">!</div>
+            <h3>Yakin ingin menghapus data ini?</h3>
+            <p>Data yang sudah dihapus tidak dapat dikembalikan.</p>
+
+            <div class="modal-actionsdelete">
+                <button class="btn-cancel" id="cancelDelete">Cancel</button>
+                <button class="btn-submit" id="confirmDelete">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-boxdelete">
+            <div class="modal-icondelete success">🗑</div>
+            <h3>Berhasil menghapus data</h3>
+            <p>Data telah dihapus secara permanen</p>
+        </div>
+    </div>
+
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
 

@@ -86,8 +86,7 @@ class UserController extends Controller
         }
 
         // 2️⃣ Query produk sesuai ERD
-        $query = $usaha->produk()
-            ->with('verifikasi');
+        $query = $usaha->produk();
 
 
         // 3️⃣ Search
@@ -152,41 +151,37 @@ class UserController extends Controller
         $request->validate([
             'produk.*.nama_produk'   => 'required|string|max:255',
             'produk.*.komposisi'     => 'required|string',
-            'produk.*.kemasan'       => 'required|string|max:100',
+            'produk.*.kemasan'       => 'required|string|max:255',
             'produk.*.berat_bersih'  => 'required|numeric|min:1',
-            'produk.*.logo_usaha'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'produk.*.image'         => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $user = Auth::user();
         $usaha = $user->usaha()->first();
 
         if (!$usaha) {
-            return redirect()->back()->with('error', 'Usaha tidak ditemukan');
+            return back()->with('error', 'Usaha tidak ditemukan');
         }
 
-        foreach ($request->produk as $data) {
+        foreach ($request->produk as $index => $data) {
 
-            $produk = Produk::create([
+            $imagePath = null;
+
+            if ($request->hasFile("produk.$index.image")) {
+                $imagePath = $request->file("produk.$index.image")
+                    ->store('produk', 'public');
+            }
+
+            Produk::create([
                 'usaha_id'      => $usaha->id,
                 'nama_produk'   => $data['nama_produk'],
                 'komposisi'     => $data['komposisi'],
                 'kemasan'       => $data['kemasan'],
                 'berat_bersih'  => $data['berat_bersih'],
+                'image'         => $imagePath,
                 'tanggal_input' => now(),
+                'status'        => 'menunggu',
             ]);
-
-            if (isset($data['logo_usaha'])) {
-
-                $path = $data['logo_usaha']
-                    ->store('dokumen/produk', 'public');
-
-                Dokumen::create([
-                    'produk_id'     => $produk->id,
-                    'jenis_dokumen' => 'logo_usaha',
-                    'file_dokumen'  => $path,
-                    'tanggal_input' => now(),
-                ]);
-            }
         }
 
         return redirect()->route('dashboard')
@@ -196,19 +191,26 @@ class UserController extends Controller
     {
         $produk = Produk::findOrFail($id);
 
-        // Hapus dokumen jika ada
-        foreach ($produk->dokumen as $dok) {
-            if (Storage::disk('public')->exists($dok->file_dokumen)) {
-                Storage::disk('public')->delete($dok->file_dokumen);
-            }
-            $dok->delete();
+        // Pastikan hanya milik user login
+        if ($produk->usaha->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        // Tidak boleh hapus jika sudah disetujui
+        if ($produk->status === 'disetujui') {
+            return redirect()->back()
+                ->with('error', 'Produk yang sudah disetujui tidak dapat dihapus.');
+        }
+
+        // Hapus gambar jika ada
+        if ($produk->image) {
+            Storage::disk('public')->delete($produk->image);
         }
 
         $produk->delete();
 
-        return response()->json([
-            'success' => true
-        ]);
+        return redirect()->back()
+            ->with('success', 'Produk berhasil dihapus.');
     }
 
     public function dashboard()

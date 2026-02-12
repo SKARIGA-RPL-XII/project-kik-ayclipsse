@@ -7,7 +7,7 @@
     @if ($role === 'admin')
         @include('component.dashboard-admin')
     @else
-        @if ($usaha->isEmpty())
+        @if ($usahaUser->isEmpty())
             @include('component.empty-dashboard')
         @else
             @include('component.dashboard-user')

@@ -11,16 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('sertifikat', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('verifikasi_id')->constrained('verifikasi')->cascadeOnDelete();
-    $table->string('nomor');
-    $table->date('tanggal_terbit');
-    $table->date('tanggal_berlaku');
-    $table->string('file_sertifikat');
-    $table->timestamps();
-});
-
+        Schema::create('sertifikat', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('produk_id')->constrained('produk')->cascadeOnDelete();
+            $table->string('nomor');
+            $table->date('tanggal_terbit');
+            $table->date('tanggal_berlaku');
+            $table->string('file_sertifikat');
+            $table->timestamps();
+        });
     }
 
     /**

@@ -54,15 +54,14 @@
                                 <td>{{ $item->berat_bersih }} gr</td>
                                 <td>{{ $item->kemasan }}</td>
                                 <td>
-                                    @php
-                                        $verifikasi = $item->dokumen->first()?->verifikasi;
-                                    @endphp
-
-                                    @if ($verifikasi && $verifikasi->hasil_verifikasi === 'disetujui')
+                                    @if ($item->status === 'disetujui')
                                         <span class="badge-success">Terdaftar PIRT</span>
+                                    @elseif ($item->status === 'ditolak')
+                                        <span class="badge-danger">Ditolak</span>
                                     @else
-                                        <span class="badge-warning">Menunggu persetujuan</span>
+                                        <span class="badge-warning">Menunggu Persetujuan</span>
                                     @endif
+
 
                                 </td>
                                 <td class="action">
@@ -71,6 +70,12 @@
                                         <img src="{{ asset('img/eye.png') }}">
                                     </a>
                                 </td>
+                                <td>
+                                    <a href="javascript:void(0)" class="icon-btn btn-delete">
+                                        <img src="{{ asset('img/trash.png') }}">
+                                    </a>
+                                </td>
+
                             </tr>
                         @empty
                             <tr>
@@ -146,6 +151,25 @@
                 <div>: <span id="m-tanggal"></span></div>
             </div>
 
+        </div>
+        <div class="modal-overlaydelete" id="deleteModal">
+            <div class="modal-boxdelete">
+                <div class="modal-icondelete warning">!</div>
+                <h3>Yakin ingin menghapus data ini?</h3>
+                <p>Data yang sudah dihapus tidak dapat dikembalikan.</p>
+                <div class="modal-actionsdelete">
+                    <button class="btn-cancel" id="cancelDelete">Cancel</button>
+                    <button class="btn-submit" id="confirmDelete">Submit</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-overlaydelete" id="successModal">
+            <div class="modal-boxdelete">
+                <div class="modal-icondelete success">🗑</div>
+                <h3>Berhasil menghapus data</h3>
+                <p>Data telah dihapus secara permanen</p>
+            </div>
         </div>
     </div>
 
@@ -543,7 +567,7 @@
             font-size: 13px;
         }
 
-=        .btn-detail-produk {
+        =.btn-detail-produk {
             margin-top: 16px;
             background: #083b6f;
             color: #fff;

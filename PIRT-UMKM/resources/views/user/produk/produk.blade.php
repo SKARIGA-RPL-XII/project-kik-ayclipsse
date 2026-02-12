@@ -35,14 +35,16 @@
                 <div class="table-container">
                     <table class="custom-table">
                         <thead>
+
+
                             <tr>
                                 <th>No</th>
+                                <th>Logo Produk</th>
                                 <th>Nama Produk</th>
-                                <th>Jenis Produk</th>
                                 <th>Komposisi</th>
                                 <th>Berat Bersih</th>
                                 <th>Kemasan</th>
-                                <th>Verifikasi</th>
+                                <th>Status</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -51,17 +53,19 @@
                             @forelse ($produk as $i => $item)
                                 <tr>
                                     <td>{{ $i + 1 }}</td>
+                                    <td></td>
                                     <td>{{ $item->nama_produk }}</td>
-                                    <td>{{ $usaha->jenis_usaha ?? '-' }}</td>
                                     <td>{{ $item->komposisi }}</td>
                                     <td>{{ $item->berat_bersih }} gr</td>
                                     <td>{{ $item->kemasan }}</td>
 
                                     <td>
-                                        @if ($item->verifikasi && $item->verifikasi->hasil_verifikasi === 'disetujui')
-                                            <span class="badge-success">Terdaftar PIRT</span>
+                                        @if ($item->status === 'disetujui')
+                                            <span class="badge-success">Disetujui</span>
+                                        @elseif ($item->status === 'ditolak')
+                                            <span class="badge-danger">Ditolak</span>
                                         @else
-                                            <span class="badge-warning">Menunggu persetujuan</span>
+                                            <span class="badge-warning">Menunggu</span>
                                         @endif
                                     </td>
 
@@ -70,15 +74,21 @@
                                             data-target="editModal-{{ $item->id }}">
                                             <img src="{{ asset('img/edit-2.png') }}">
                                         </a>
-                                        <a href="javascript:void(0)" class="icon-btn btn-delete"
-                                            data-id="{{ $item->id }}">
-                                            <img src="{{ asset('img/trash.png') }}">
-                                        </a>
-                                        <a href="#" class="icon-btn">
-                                            <img src="{{ asset('img/eye.png') }}">
-                                        </a>
+
+                                        <form action="{{ route('produk.destroy', $item->id) }}" method="POST"
+                                            onsubmit="return confirm('Yakin ingin menghapus produk ini?')"
+                                            style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button type="submit" class="icon-btn" style="border:none;background:none;">
+                                                <img src="{{ asset('img/trash.png') }}">
+                                            </button>
+                                        </form>
+
                                     </td>
                                 </tr>
+
 
                                 <div class="modal-overlay" id="editModal-{{ $item->id }}">
                                     <div class="modal-edit-produk">

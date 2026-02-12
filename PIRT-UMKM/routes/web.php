@@ -28,7 +28,11 @@ Route::middleware('auth')->group(function () {
         Route::delete('/admin/produk/{id}', [AdminController::class, 'produkDestroy']);
 
         Route::get('/admin/usaha', [AdminController::class, 'usaha'])->name('admin.usaha');
-        Route::get('/admin/usaha/{id}', [AdminController::class, 'usahaDestroy'])->name('admin.usaha.destroy');
+        Route::delete('/admin/usaha/{id}', [AdminController::class, 'usahaDestroy'])->name('admin.usaha.destroy');
+
+        Route::get('/admin/persetujuan', [AdminController::class, 'persetujuan'])->name('admin.persetujuan');
+        Route::patch('/admin/persetujuan/produk/{produk}', [AdminController::class, 'produkStatus'])->name('persetujuan.produk');
+        Route::patch('/admin/persetujuan/usaha/{usaha}', [AdminController::class, 'usahaStatus'])->name('persetujuan.usaha');
     });
     Route::middleware('role:user')->group(function () {
         Route::get('/profil', [UserController::class, 'profil'])->name('profil.usaha');
@@ -38,7 +42,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/pendaftaran-usaha', [UserController::class, 'usahaStore'])->name('usaha.pendaftaran.store');
         Route::get('/produk', [UserController::class, 'produk'])->name('produk.usaha');
         Route::put('/produk/{id}', [UserController::class, 'produkUpdate'])->name('produk.usaha.update');
-        Route::delete('/produk/{id}', [UserController::class, 'produkDestroy'])->name('produk.usaha.destroy');
+        Route::delete('/produk/{id}', [UserController::class, 'produkDestroy'])->name('produk.destroy');
         Route::get('/pendaftaran-produk', [UserController::class, 'pendaftaranProduk'])->name('user.produk.pendaftaran');
         Route::post('/pendaftaran-produk', [UserController::class, 'pendaftaranProdukStore'])->name('produk.usaha.pendaftaran.store');
     });
@@ -53,6 +57,3 @@ Route::middleware('auth')->group(function () {
 // });
 
 
-Route::get('/admin/persetujuan', function () {
-    return view('admin.persetujuan');
-});

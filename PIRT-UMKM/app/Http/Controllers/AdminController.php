@@ -15,12 +15,8 @@ class AdminController extends Controller
     }
     public function produk(Request $request)
     {
-        $query = Produk::with([
-            'usaha',
-            'dokumen.verifikasi'
-        ]);
+        $query = Produk::with('usaha');
 
-        // 🔍 SEARCH REALTIME
         if ($request->filled('q')) {
             $query->where(function ($q) use ($request) {
                 $q->where('nama_produk', 'like', '%' . $request->q . '%')
@@ -33,7 +29,6 @@ class AdminController extends Controller
             });
         }
 
-        // ⚠️ JIKA AJAX (REALTIME SEARCH)
         if ($request->ajax()) {
             return response()->json(
                 $query->get()->map(function ($item) {
@@ -44,7 +39,7 @@ class AdminController extends Controller
                         'komposisi' => $item->komposisi,
                         'berat_bersih' => $item->berat_bersih,
                         'kemasan' => $item->kemasan,
-                        'verifikasi' => $item->verifikasi?->hasil_verifikasi
+                        'verifikasi' => $item->status // langsung dari kolom produk
                     ];
                 })
             );
@@ -78,7 +73,6 @@ class AdminController extends Controller
     {
         $query = Usaha::query();
 
-        // 🔍 SEARCH REALTIME (SAMA SEPERTI PRODUK)
         if ($request->filled('q')) {
             $query->where(function ($q) use ($request) {
                 $q->where('nama_usaha', 'like', '%' . $request->q . '%')
@@ -87,7 +81,6 @@ class AdminController extends Controller
             });
         }
 
-        // ⚠️ JIKA AJAX → JSON (UNTUK SEARCH REALTIME)
         if ($request->ajax()) {
             return response()->json(
                 $query->orderBy('id', 'desc')->get()->map(function ($item) {
@@ -96,13 +89,12 @@ class AdminController extends Controller
                         'nama_usaha'   => $item->nama_usaha,
                         'jenis_usaha'  => $item->jenis_usaha,
                         'alamat_usaha' => $item->alamat_usaha,
-                        'status'       => 'Terdaftar PIRT', // atau nanti dari relasi
+                        'status'       => 'Terdaftar PIRT',
                     ];
                 })
             );
         }
 
-        // 🧾 NORMAL LOAD (PAGINATION)
         $usaha = $query
             ->orderBy('id', 'desc')
             ->paginate(5)
@@ -117,6 +109,113 @@ class AdminController extends Controller
 
         return response()->json([
             'success' => true
+        ]);
+    }
+    public function persetujuan(Request $request)
+    {
+        $type   = $request->get('type', 'usaha');
+        $search = $request->get('q');
+
+        if ($type === 'produk') {
+
+            $query = Produk::with('usaha')
+                ->where('status', 'menunggu');
+
+            if ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nama_produk', 'like', "%{$search}%")
+                        ->orWhereHas('usaha', function ($u) use ($search) {
+                            $u->where('nama_usaha', 'like', "%{$search}%")
+                                ->orWhere('jenis_usaha', 'like', "%{$search}%");
+                        });
+                });
+            }
+
+            $data = $query->latest()->get();
+
+            if ($request->ajax()) {
+                return response()->json(
+                    $data->map(function ($item) {
+                        return [
+                            'id' => $item->id,
+                            'type' => 'produk',
+                            'nama_usaha' => $item->usaha->nama_usaha,
+                            'nama_produk' => $item->nama_produk,
+                            'jenis' => $item->usaha->jenis_usaha,
+                            'status' => $item->status,
+                        ];
+                    })
+                );
+            }
+        } else {
+
+            $query = Usaha::where('status', 'menunggu');
+
+            if ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nama_usaha', 'like', "%{$search}%")
+                        ->orWhere('jenis_usaha', 'like', "%{$search}%");
+                });
+            }
+
+            $data = $query->latest()->get();
+
+            if ($request->ajax()) {
+                return response()->json(
+                    $data->map(function ($item) {
+                        return [
+                            'id' => $item->id,
+                            'type' => 'usaha',
+                            'nama_usaha' => $item->nama_usaha,
+                            'nama_produk' => '-',
+                            'jenis' => $item->jenis_usaha,
+                            'status' => $item->status,
+                        ];
+                    })
+                );
+            }
+        }
+
+        return view('admin.persetujuan', compact('data', 'type'));
+    }
+
+
+
+    public function usahaStatus(Request $request, Usaha $usaha)
+    {
+        $usaha->update([
+            'status' => $request->status
+        ]);
+
+        return back()->with('success', 'Status usaha berhasil diperbarui');
+    }
+    public function produkStatus(Request $request, Produk $produk)
+    {
+        $produk->update([
+            'status' => $request->status
+        ]);
+
+        return back()->with('success', 'Status produk berhasil diperbarui');
+    }
+    public function chartData()
+    {
+        $labels = [];
+        $data = [];
+
+        for ($i = 6; $i >= 0; $i--) {
+
+            $date = now()->subDays($i);
+
+            $labels[] = $date->format('d M');
+
+            $count = Produk::whereDate('created_at', $date)->count();
+
+            $data[] = $count;
+        }
+
+        return response()->json([
+            'labels' => $labels,
+            'data' => $data
         ]);
     }
 }

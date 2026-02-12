@@ -17,10 +17,9 @@ return new class extends Migration
             $table->string('nama_usaha');
             $table->text('alamat_usaha');
             $table->string('jenis_usaha');
-            $table->string('izin_usaha')->nullable();
             $table->date('tanggal_berdiri')->nullable();
             $table->string('hasil_inspeksi')->nullable();
-            $table->enum('status', ['aktif', 'nonaktif', 'menunggu'])->default('menunggu');
+            $table->enum('status', ['disetujui', 'ditolak', 'menunggu'])->default('menunggu');
             $table->timestamps();
         });
     }

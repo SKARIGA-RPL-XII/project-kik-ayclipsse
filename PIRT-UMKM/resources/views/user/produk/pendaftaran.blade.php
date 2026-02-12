@@ -138,7 +138,7 @@
             cursor: pointer;
             margin-bottom: 20px;
         }
-        
+
 
         .steps {
             display: flex;
@@ -164,7 +164,6 @@
             height: 4px;
             background: #0b2e5b;
         }
-
     </style>
 </head>
 
@@ -236,7 +235,7 @@
 
                         <div class="form-group">
                             <label>Logo Usaha</label>
-                            <input type="file" name="produk[0][logo_usaha]">
+                            <input type="file" name="produk[0][image]">
                         </div>
                     </div>
                 </div>
@@ -301,7 +300,7 @@
 
                     <div class="form-group">
                         <label>Logo Usaha</label>
-                        <input type="file" name="produk[${produkIndex}][logo_usaha]">
+                        <input type="file" name="produk[${produkIndex}][image]">
                     </div>
                 </div>
             `;

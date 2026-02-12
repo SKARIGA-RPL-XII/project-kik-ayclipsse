@@ -23,14 +23,34 @@ class MainController extends Controller
             ]);
         }
 
-        // ================= USER =================
-        $usaha = Usaha::where('user_id', $user->id)->get();
+        $user = Auth::user();
 
-        return view('dashboard', [
-            'usaha' => $usaha,
-            'role'  => 'user'
-        ]);
+        $usahaUser = Usaha::where('user_id', $user->id)->pluck('id');
+
+        $totalUsaha = Usaha::where('user_id', $user->id)->count();
+
+        $totalProduk = Produk::whereIn('usaha_id', $usahaUser)->count();
+
+        $totalDisetujui = Produk::whereIn('usaha_id', $usahaUser)
+            ->where('status', 'disetujui')
+            ->count();
+
+        $produkTerbaru = Produk::whereIn('usaha_id', $usahaUser)
+            ->latest()
+            ->take(3)
+            ->get();
+
+        $profilUsaha = Usaha::where('user_id', $user->id)->first();
+        $role = 'user';
+        return view('dashboard', compact(
+            'totalUsaha',
+            'usahaUser',
+            'totalProduk',
+            'totalDisetujui',
+            'produkTerbaru',
+            'profilUsaha',
+            'role'
+
+        ));
     }
-    
-
 }

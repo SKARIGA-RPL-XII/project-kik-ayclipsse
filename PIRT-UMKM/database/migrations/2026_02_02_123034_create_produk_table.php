@@ -15,10 +15,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('usaha_id')->constrained('usaha')->cascadeOnDelete();
             $table->string('nama_produk');
+            $table->string('image')->nullable();
             $table->text('komposisi');
             $table->integer('berat_bersih');
             $table->string('kemasan');
             $table->date('tanggal_input');
+            $table->enum('status', ['disetujui', 'menunggu', 'ditolak'])->default('menunggu');
             $table->timestamps();
         });
     }

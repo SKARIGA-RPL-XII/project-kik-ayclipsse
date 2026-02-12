@@ -1,5 +1,6 @@
 <div class="dashboard-admin">
 
+    <!-- HEADER -->
     <div class="dashboard-header">
         <h1>
             Selamat Datang Kembali
@@ -8,6 +9,7 @@
         <p>Kelola pendaftaran PIRT dan produk usahamu di sini.</p>
     </div>
 
+    <!-- STAT CARDS -->
     <div class="dashboard-cards">
 
         <div class="dashboard-card usaha">
@@ -87,6 +89,7 @@
 
 </div>
 
+
 <style>
     .dashboard-header h1 {
         font-size: 26px;
@@ -102,6 +105,7 @@
         margin-bottom: 25px;
     }
 
+    /* CARDS */
     .dashboard-cards {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -128,6 +132,7 @@
         border-radius: 50%;
     }
 
+    /* VARIANTS */
     .dashboard-card.usaha {
         background: #fff1f1;
     }
@@ -152,6 +157,7 @@
         background: #d1f2e1;
     }
 
+    /* GRID */
     .dashboard-grid {
         display: grid;
         grid-template-columns: 2.5fr 1fr;
@@ -199,35 +205,36 @@
     }
 </style>
 
-@push('scripts')
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const ctx = document.getElementById('adminChart');
 
-        if (ctx) {
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['1 Mei', '2 Mei', '3 Mei', '4 Mei', '5 Mei', '6 Mei', '7 Mei'],
-                    datasets: [{
-                        label: 'Jumlah Aktivitas',
-                        data: [15, 14, 24, 20, 28, 21, 29],
-                        borderColor: '#0b4a87',
-                        backgroundColor: 'rgba(11,74,135,0.2)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            align: 'end'
+@push('scripts')
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const ctx = document.getElementById('adminChart');
+
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['1 Mei', '2 Mei', '3 Mei', '4 Mei', '5 Mei', '6 Mei', '7 Mei'],
+                        datasets: [{
+                            label: 'Jumlah Aktivitas',
+                            data: [15, 14, 24, 20, 28, 21, 29],
+                            borderColor: '#0b4a87',
+                            backgroundColor: 'rgba(11,74,135,0.2)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                align: 'end'
+                            }
                         }
                     }
-                }
-            });
-        }
-    });
-</script>
+                });
+            }
+        });
+    </script>
 @endpush

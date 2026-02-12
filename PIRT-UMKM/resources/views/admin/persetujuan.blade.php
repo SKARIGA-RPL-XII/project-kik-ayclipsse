@@ -10,13 +10,23 @@
     </div>
 
     <div class="card">
-
         <div class="table-card">
+
+            <!-- TOP BAR -->
             <div class="approval-top">
                 <div class="tab-wrapper">
-                    <button class="tab-btn active">Tabel Usaha</button>
-                    <button class="tab-btn">Tabel Produk</button>
+                    <a href="{{ route('admin.persetujuan', ['type' => 'usaha']) }}"
+                        class="tab-btn {{ $type === 'usaha' ? 'active' : '' }}">
+                        Tabel Usaha
+                    </a>
+
+                    <a href="{{ route('admin.persetujuan', ['type' => 'produk']) }}"
+                        class="tab-btn {{ $type === 'produk' ? 'active' : '' }}">
+                        Tabel Produk
+                    </a>
                 </div>
+
+
                 <div class="search-wrapper">
                     <div class="search-input">
                         <img src="{{ asset('img/search.png') }}" class="search-icon">
@@ -27,11 +37,13 @@
                         <img src="{{ asset('img/refresh.png') }}">
                     </button>
                 </div>
+
+
             </div>
 
-
+            <!-- TABLE -->
             <div class="table-container">
-                <table class="custom-table">
+                <table class="custom-table" id="tableBody">
                     <thead>
                         <tr>
                             <th>No</th>
@@ -43,112 +55,332 @@
                         </tr>
                     </thead>
 
-                    <tbody id="tableBody">
-                        <tr>
-                            <td>1</td>
-                            <td>DAPUR NUSANTARA</td>
-                            <td>Jamu Temulawak</td>
-                            <td>Minuman</td>
-                            <td>
-                                <span class="badge-success">Terdaftar PIRT</span>
-                            </td>
-                            <td class="action">
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/eye.png') }}">
-                                </a>
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/trash.png') }}">
-                                </a>
-                            </td>
-                        </tr>
+                    <tbody>
+                        @foreach ($data as $item)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
 
-                        <tr>
-                            <td>2</td>
-                            <td>CEMALICIOUS</td>
-                            <td>Keripik Singkong Original</td>
-                            <td>Makanan</td>
-                            <td>
-                                <span class="badge-warning">Menunggu persetujuan</span>
-                            </td>
-                            <td class="action">
-                                <a href="#" class="icon-btn">
-                                    <img src="{{ asset('img/edit-2.png') }}">
-                                </a>
-                                <a href="javascript:void(0)" class="icon-btn btn-delete" data-id="1">
-                                    <img src="{{ asset('img/trash.png') }}">
-                                </a>
+                                @if ($type === 'usaha')
+                                    <td>{{ $item->nama_usaha }}</td>
+                                    <td>-</td>
+                                    <td>{{ $item->jenis_usaha }}</td>
+                                @else
+                                    <td>{{ $item->usaha->nama_usaha }}</td>
+                                    <td>{{ $item->nama_produk }}</td>
+                                    <td>{{ $item->usaha->jenis_usaha }}</td>
+                                @endif
 
-                            </td>
-                        </tr>
+                                <td>
+                                    @if ($item->status == 'disetujui')
+                                        <span class="badge-success">Disetujui</span>
+                                    @elseif($item->status == 'ditolak')
+                                        <span class="badge-rejected">Ditolak</span>
+                                    @else
+                                        <span class="badge-warning">Menunggu</span>
+                                    @endif
+                                </td>
+
+                                <td>
+                                    <!-- Tombol buka modal -->
+                                    <button class="btn-approval" data-id="{{ $item->id }}"
+                                        data-type="{{ $type }}">
+                                        Approve
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
+
                 </table>
-
-            </div>
-            <div class="modal-overlaydelete" id="deleteModal">
-                <div class="modal-boxdelete">
-
-                    <div class="modal-icondelete warning">
-                        !
-                    </div>
-
-                    <h3>Yakin ingin menghapus data ini?</h3>
-                    <p>Data yang sudah dihapus tidak dapat dikembalikan.</p>
-
-                    <div class="modal-actionsdelete">
-                        <button class="btn-cancel" id="cancelDelete">Cancel</button>
-                        <button class="btn-submit" id="confirmDelete">Submit</button>
-                    </div>
-
-                </div>
             </div>
 
-            <div class="modal-overlaydelete" id="successModal">
-                <div class="modal-boxdelete">
+        </div>
+    </div>
+    <div class="modal-overlay" id="approvalModal">
+        <div class="modal-box">
+            <h3>Konfirmasi Persetujuan</h3>
 
-                    <div class="modal-icondelete success">
-                        🗑
-                    </div>
+            <form id="approvalForm" method="POST">
+                @csrf
+                @method('PATCH')
 
-                    <h3>Berhasil menghapus data</h3>
-                    <p>Data telah dihapus secara permanen</p>
+                <div class="modal-actions">
+                    <button type="submit" name="status" value="disetujui" class="btn-setuju">
+                        Setujui
+                    </button>
 
+                    <button type="submit" name="status" value="ditolak" class="btn-tolak">
+                        Tolak
+                    </button>
                 </div>
-            </div>
+            </form>
+        </div>
+    </div>
 
-
-            <div class="table-footer">
-                <div class="showing">
-                    Showing
-                    <span class="showing-count">
-                        5 <span class="caret">▾</span>
-                    </span>
-                    data out of 20
-                </div>
-
-                <div class="pagination-wrapper">
-                    <span class="per-page">Data per page</span>
-
-                    <div class="pagination">
-                        <button class="nav">‹</button>
-
-                        <button class="active">1</button>
-                        <button class="page">2</button>
-                        <span class="dots">…</span>
-                        <button class="page">5</button>
-
-                        <button class="nav">›</button>
-                    </div>
-                </div>
+    <!-- DELETE MODAL -->
+    <div class="modal-overlaydelete" id="deleteModal">
+        <div class="modal-boxdelete">
+            <div class="modal-icondelete warning">!</div>
+            <h3>Yakin ingin menghapus data ini?</h3>
+            <p>Data yang sudah dihapus tidak dapat dikembalikan.</p>
+            <div class="modal-actionsdelete">
+                <button class="btn-cancel" id="cancelDelete">Cancel</button>
+                <button class="btn-submit" id="confirmDelete">Submit</button>
             </div>
         </div>
-
     </div>
 
-
+    <div class="modal-overlaydelete" id="successModal">
+        <div class="modal-boxdelete">
+            <div class="modal-icondelete success">🗑</div>
+            <h3>Berhasil menghapus data</h3>
+            <p>Data telah dihapus secara permanen</p>
+        </div>
     </div>
 
+    <!-- EDIT MODAL -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-detail">
+            <h2>Detail Perubahan Usaha</h2>
+            <hr>
+
+            <div class="form-group">
+                <label>Nama Usaha</label>
+                <input type="text" id="modalNama" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Nama Produk</label>
+                <textarea id="modalAlamat" rows="3" readonly></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Jenis Produk</label>
+                <input type="text" id="modalJenis" readonly>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-tolak" id="btnTolak">Tolak</button>
+                <button class="btn-setuju" id="btnSetuju">Setujui</button>
+            </div>
+        </div>
+    </div>
 
     <style>
+        /* ===== TABLE STYLE ===== */
+        .table-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .table-container {
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .custom-table thead {
+            background: #083b6f;
+            color: #fff;
+        }
+
+        .custom-table th,
+        .custom-table td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .custom-table tbody tr {
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .badge-success {
+            background: #dcfce7;
+            color: #16a34a;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+        }
+
+        .badge-warning {
+            background: #eef2f7;
+            color: #475569;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+        }
+
+        .badge-approved {
+            background: #dcfce7;
+            color: #16a34a;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+        }
+
+        .badge-rejected {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+        }
+
+        .action {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .icon-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .icon-btn img {
+            width: 16px;
+        }
+
+        /* ===== MODAL STYLE ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-detail {
+            background: #fff;
+            width: 700px;
+            max-width: 95%;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background: #e5e7eb;
+            border-radius: 6px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-tolak {
+            flex: 1;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid red;
+            background: #fff;
+            color: red;
+            cursor: pointer;
+        }
+
+        .btn-setuju {
+            flex: 1;
+            padding: 10px;
+            border-radius: 6px;
+            border: none;
+            background: green;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        /* DELETE MODAL */
+        .modal-overlaydelete {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-boxdelete {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .modal-icondelete {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .modal-icondelete.warning {
+            background: #fde68a;
+            color: #f59e0b;
+        }
+
+        .modal-icondelete.success {
+            background: #fecaca;
+            color: #dc2626;
+        }
+
+        .modal-actionsdelete {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn-cancel {
+            padding: 8px 18px;
+            border-radius: 8px;
+            border: 1px solid #ef4444;
+            background: #fff;
+            color: #ef4444;
+        }
+
+        .btn-submit {
+            padding: 8px 18px;
+            border-radius: 8px;
+            border: none;
+            background: #083b6f;
+            color: #fff;
+        }
+
         .table-card {
             background: #ffffff;
             border-radius: 10px;
@@ -265,7 +497,6 @@
             border-radius: 8px;
             padding: 12px 16px;
             margin-bottom: 14px;
-
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -287,7 +518,6 @@
             border: none;
             font-size: 18px;
             cursor: pointer;
-
             display: flex;
             align-items: center;
             justify-content: center;
@@ -307,7 +537,6 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 13px;
-
         }
 
         .custom-table thead {
@@ -334,7 +563,6 @@
         .custom-table tbody tr:last-child {
             border-bottom: none;
         }
-
 
         .badge-success {
             display: inline-flex;
@@ -376,14 +604,12 @@
             font-size: 8px;
         }
 
-
         .action {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 10px;
         }
-
 
         .table-footer {
             margin-top: 10px;
@@ -424,11 +650,9 @@
             padding: 14px 16px;
             background: #f5f6f8;
             border-radius: 8px;
-
             display: flex;
             justify-content: space-between;
             align-items: center;
-
             font-size: 13px;
             color: #6b7280;
         }
@@ -497,7 +721,6 @@
             cursor: pointer;
         }
 
-
         .showing {
             display: flex;
             align-items: center;
@@ -532,8 +755,6 @@
             color: #6b7280;
         }
 
-
-
         .pagination {
             display: flex;
             align-items: center;
@@ -558,7 +779,6 @@
             color: #003366;
             font-size: 12px;
             font-weight: 500;
-
             display: flex;
             align-items: center;
             justify-content: center;
@@ -594,91 +814,143 @@
             background: #003366;
             color: #ffffff;
         }
+
+        .modal-detail {
+            background: #ffffff;
+            width: 800px;
+            max-width: 95%;
+            padding: 24px;
+            border-radius: 12px;
+        }
+
+        .modal-detail h2 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .modal-detail hr {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            font-weight: 500;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: none;
+            background: #e5e7eb;
+            font-size: 14px;
+        }
     </style>
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
 
             const searchInput = document.getElementById("searchInput");
             const refreshBtn = document.getElementById("refreshBtn");
+            const tbody = document.querySelector(".custom-table tbody");
+            const tabs = document.querySelectorAll(".tab-btn");
 
-            function getRows() {
-                return document.querySelectorAll("#tableBody tr");
-            }
+            let currentType = "{{ $type }}";
+            let debounceTimer;
 
-            if (searchInput) {
-                searchInput.addEventListener("input", function() {
-                    const keyword = this.value.toLowerCase();
-                    const rows = getRows();
+            function loadData(keyword = "") {
 
-                    rows.forEach(row => {
-                        const text = row.textContent.toLowerCase();
-                        row.style.display = text.includes(keyword) ? "" : "none";
+                fetch(`{{ route('admin.persetujuan') }}?type=${currentType}&q=${keyword}`, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+
+                        tbody.innerHTML = "";
+
+                        if (data.length === 0) {
+                            tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6">Tidak ada data</td>
+                    </tr>
+                `;
+                            return;
+                        }
+
+                        data.forEach((item, index) => {
+
+                            let badge = "";
+
+                            if (item.status === "disetujui") {
+                                badge = `<span class="badge-success">Disetujui</span>`;
+                            } else if (item.status === "ditolak") {
+                                badge = `<span class="badge-rejected">Ditolak</span>`;
+                            } else {
+                                badge = `<span class="badge-warning">Menunggu</span>`;
+                            }
+
+                            tbody.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${item.nama_usaha}</td>
+                        <td>${item.nama_produk}</td>
+                        <td>${item.jenis}</td>
+                        <td>${badge}</td>
+                        <td>
+                            <button class="btn-approval"
+                                data-id="${item.id}"
+                                data-type="${item.type}">
+                                Approve
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                        });
+
                     });
-                });
             }
 
-            if (refreshBtn) {
-                refreshBtn.addEventListener("click", function() {
-                    searchInput.value = "";
+            // 🔥 SEARCH REALTIME (DEBOUNCE biar halus)
+            searchInput.addEventListener("keyup", function() {
 
-                    const rows = getRows();
-                    rows.forEach(row => {
-                        row.style.display = "table-row";
-                    });
-                });
-            }
+                clearTimeout(debounceTimer);
 
-
-            let selectedRow = null;
-
-            const deleteModal = document.getElementById("deleteModal");
-            const successModal = document.getElementById("successModal");
-            const confirmDelete = document.getElementById("confirmDelete");
-            const cancelDelete = document.getElementById("cancelDelete");
-
-            document.addEventListener("click", function(e) {
-
-                const deleteBtn = e.target.closest(".btn-delete");
-                if (deleteBtn) {
-                    selectedRow = deleteBtn.closest("tr");
-                    deleteModal.style.display = "flex";
-                }
-
-                if (e.target === deleteModal) {
-                    deleteModal.style.display = "none";
-                }
-
-                if (e.target === successModal) {
-                    successModal.style.display = "none";
-                }
+                debounceTimer = setTimeout(() => {
+                    loadData(this.value);
+                }, 300); // delay 300ms
             });
 
-            if (cancelDelete) {
-                cancelDelete.addEventListener("click", function() {
-                    deleteModal.style.display = "none";
+            // 🔄 REFRESH
+            refreshBtn.addEventListener("click", function() {
+                searchInput.value = "";
+                loadData();
+            });
+
+            // 🔁 TAB SWITCH REALTIME
+            tabs.forEach(tab => {
+                tab.addEventListener("click", function(e) {
+                    e.preventDefault();
+
+                    tabs.forEach(t => t.classList.remove("active"));
+                    this.classList.add("active");
+
+                    currentType = this.textContent.includes("Produk") ? "produk" : "usaha";
+
+                    loadData(searchInput.value);
                 });
-            }
-
-            if (confirmDelete) {
-                confirmDelete.addEventListener("click", function() {
-
-                    if (selectedRow) {
-                        selectedRow.remove();
-                    }
-
-                    deleteModal.style.display = "none";
-                    successModal.style.display = "flex";
-
-                    setTimeout(() => {
-                        successModal.style.display = "none";
-                    }, 1500);
-
-                });
-            }
+            });
 
         });
     </script>
-
-
+    >
 
 @endsection

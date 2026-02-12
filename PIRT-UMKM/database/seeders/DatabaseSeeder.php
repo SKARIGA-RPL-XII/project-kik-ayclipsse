@@ -11,9 +11,16 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        /* ======================
-           USERS
-        ====================== */
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('inspeksi_detail')->truncate();
+        DB::table('inspeksi')->truncate();
+        DB::table('sertifikat')->truncate();
+        DB::table('produk')->truncate();
+        DB::table('usaha')->truncate();
+        DB::table('variabel')->truncate();
+        DB::table('users')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         $adminId = DB::table('users')->insertGetId([
             'name' => 'Admin PIRT',
             'email' => 'admin@pirt.test',
@@ -37,6 +44,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $users = [];
+
         for ($i = 1; $i <= 5; $i++) {
             $users[] = DB::table('users')->insertGetId([
                 'name' => "UMKM User {$i}",
@@ -44,34 +52,28 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'role' => 'user',
                 'alamat' => 'Kota Batu',
-                'no_hp' => '08900000' . $i,
+                'no_hp' => '089000000' . $i,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
         }
 
-        /* ======================
-           USAHA
-        ====================== */
         $usahaList = [];
+
         foreach ($users as $index => $userId) {
             $usahaList[] = DB::table('usaha')->insertGetId([
                 'user_id' => $userId,
                 'nama_usaha' => 'Usaha Kuliner ' . ($index + 1),
                 'alamat_usaha' => 'Jl. Mawar No.' . ($index + 1),
                 'jenis_usaha' => 'Makanan / Minuman',
-                'izin_usaha' => 'PIRT-00' . ($index + 1),
                 'tanggal_berdiri' => Carbon::now()->subYears(rand(3, 10)),
-                'hasil_inspeksi' => 'Memenuhi Syarat',
-                'status' => 'aktif',
+                'hasil_inspeksi' => null,
+                'status' => 'menunggu',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
         }
 
-        /* ======================
-           PRODUK
-        ====================== */
         foreach ($usahaList as $usahaId) {
             for ($i = 1; $i <= 3; $i++) {
                 DB::table('produk')->insert([
@@ -81,16 +83,14 @@ class DatabaseSeeder extends Seeder
                     'berat_bersih' => rand(100, 500),
                     'kemasan' => 'Plastik / Botol',
                     'tanggal_input' => now(),
+                    'status' => 'menunggu',
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
             }
         }
 
-        /* ======================
-           VARIABEL INSPEKSI
-        ====================== */
-        $variabel = [
+        $variabelData = [
             ['A', 'Lokasi & Lingkungan', 1, 'Lingkungan bersih', 2],
             ['A', 'Lokasi & Lingkungan', 2, 'Bebas pencemaran', 2],
             ['B', 'Bangunan', 3, 'Bangunan layak', 3],
@@ -101,7 +101,7 @@ class DatabaseSeeder extends Seeder
             ['D', 'Higiene', 8, 'Cuci tangan tersedia', 2],
         ];
 
-        foreach ($variabel as $v) {
+        foreach ($variabelData as $v) {
             DB::table('variabel')->insert([
                 'kode_kategori' => $v[0],
                 'nama_kategori' => $v[1],
@@ -113,23 +113,22 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        /* ======================
-           INSPEKSI & DETAIL
-        ====================== */
         $variabelList = DB::table('variabel')->get();
 
         foreach ($usahaList as $usahaId) {
+
             $inspeksiId = DB::table('inspeksi')->insertGetId([
                 'usaha_id' => $usahaId,
                 'petugas_id' => $petugasId,
-                'tanggal_inspeksi' => Carbon::now()->subDays(rand(1, 60)),
+                'tanggal_inspeksi' => Carbon::now()->subDays(rand(1, 30)),
                 'total_nilai' => 0,
-                'kesimpulan' => 'Memenuhi Syarat',
+                'kesimpulan' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
 
             $totalNilai = 0;
+            $maxNilai = $variabelList->sum('bobot');
 
             foreach ($variabelList as $item) {
                 $jawaban = rand(0, 1) ? 'ya' : 'tidak';
@@ -147,9 +146,24 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
 
+            $persentase = ($totalNilai / $maxNilai) * 100;
+
+            $kesimpulan = $persentase >= 70
+                ? 'Memenuhi Syarat'
+                : 'Tidak Memenuhi Syarat';
+
             DB::table('inspeksi')
                 ->where('id', $inspeksiId)
-                ->update(['total_nilai' => $totalNilai]);
+                ->update([
+                    'total_nilai' => $totalNilai,
+                    'kesimpulan' => $kesimpulan
+                ]);
+
+            DB::table('usaha')
+                ->where('id', $usahaId)
+                ->update([
+                    'hasil_inspeksi' => $kesimpulan
+                ]);
         }
     }
 }

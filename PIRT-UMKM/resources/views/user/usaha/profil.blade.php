@@ -295,4 +295,4 @@
         });
     </script>
 
-@endsection
+@endsection 
