@@ -13,21 +13,27 @@
 
         <div class="table-card">
 
-            <!-- TOP BAR -->
-            <div class="table-top">
+            <div class="approval-top">
                 <div class="search-wrapper">
-                    <img src="{{ asset('img/search.png') }}" class="search-icon" alt="search">
-                    <input type="text" id="search" placeholder="Cari Data..." autocomplete="off">
+                    <div class="search-input">
+                        <img src="{{ asset('img/search.png') }}" class="search-icon">
+                        <input type="text" id="search" placeholder="Cari Data...">
+                    </div>
+
+                    <button type="button" class="refresh-btn" id="refreshBtn">
+                        <img src="{{ asset('img/refresh.png') }}">
+                    </button>
                 </div>
             </div>
 
 
-            <!-- TABLE -->
+
             <div class="table-container">
                 <table class="custom-table">
                     <thead>
                         <tr>
                             <th>No</th>
+                            <th>Logo Produk</th>
                             <th>Nama Produk</th>
                             <th>Jenis Produk</th>
                             <th>Komposisi</th>
@@ -78,7 +84,6 @@
                 </table>
             </div>
 
-            <!-- FOOTER -->
             <div class="table-footer">
                 <div class="showing">
                     Showing
@@ -147,7 +152,6 @@
 
 
     <style>
-        /* CARD */
         .table-card {
             background: #ffffff;
             border-radius: 10px;
@@ -155,9 +159,6 @@
             margin-top: 16px;
         }
 
-        /* =====================
-                                                                                               TOP BAR
-                                                                                            ===================== */
         .table-top {
             display: flex;
             justify-content: space-between;
@@ -166,44 +167,67 @@
             gap: 12px;
         }
 
-        /* SEARCH */
+        .approval-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
         .search-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-input {
             position: relative;
-            flex: 1;
-            max-width: 620px;
-            gap: 5px;
         }
 
-        .search-wrapper input {
-            width: 100%;
-            height: 40px;
-            padding: 0 14px 0 42px;
-            font-size: 14px;
-            border: 1px solid #374151;
-            border-radius: 5px;
+        .search-input input {
+            width: 260px;
+            height: 38px;
+            padding: 0 14px 0 40px;
+            border-radius: 6px;
+            border: 1px solid #0b2e5b;
             outline: none;
+            font-size: 13px;
             color: #374151;
-            flex: 1;
         }
 
-        .search-wrapper input::placeholder {
+        .search-input input::placeholder {
             color: #9ca3af;
         }
 
-        /* ICON SEARCH */
         .search-icon {
             position: absolute;
-            left: 14px;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
-            width: 18px;
-            height: 18px;
-            opacity: 0.9;
+            width: 15px;
+            opacity: 0.8;
         }
 
-        /* =====================
-                                                                                               BUTTON TAMBAH
-                                                                                            ===================== */
+        .refresh-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 6px;
+            border: 1px solid #0b2e5b;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .refresh-btn img {
+            width: 16px;
+        }
+
+        .refresh-btn:hover {
+            background: #f1f5f9;
+        }
+
         .btn-primary {
             height: 40px;
             background: #083b6f;
@@ -221,14 +245,12 @@
             background: #062f57;
         }
 
-        /* TABLE CONTAINER */
         .table-container {
             border: 1px solid #cbd5e1;
             border-radius: 8px;
             overflow: hidden;
         }
 
-        /* TABLE */
         .custom-table {
             width: 100%;
             border-collapse: collapse;
@@ -260,7 +282,6 @@
             border-bottom: none;
         }
 
-        /* BADGE */
         .badge-success {
             display: inline-flex;
             align-items: center;
@@ -270,7 +291,6 @@
             border-radius: 20px;
             background: #e6f9ec;
             color: #16a34a;
-            /* border: 1px solid #16a34a; */
         }
 
         .badge-success::before {
@@ -291,20 +311,17 @@
             border-radius: 20px;
             background: #eef2f7;
             color: #475569;
-            /* border: 1px solid #cbd5e1; */
         }
 
         .badge-warning::before {
             content: "⏳";
         }
 
-        /* ACTION */
         .action {
             font-size: 14px;
             white-space: nowrap;
         }
 
-        /* FOOTER */
         .table-footer {
             margin-top: 10px;
             display: flex;
@@ -314,14 +331,12 @@
             color: #6b7280;
         }
 
-        /* ACTION ICON */
         .action {
             display: flex;
             justify-content: center;
             gap: 10px;
         }
 
-        /* ICON BUTTON */
         .icon-btn {
             width: 28px;
             height: 28px;
@@ -342,9 +357,6 @@
         }
 
 
-        /* =====================
-                                                                                                       TABLE FOOTER
-                                                                                                    ===================== */
         .table-footer {
             margin-top: 12px;
             padding: 14px 16px;
@@ -359,14 +371,12 @@
             color: #6b7280;
         }
 
-        /* SHOWING TEXT */
         .showing {
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
-        /* DROPDOWN NUMBER */
         .showing-count {
             display: inline-flex;
             align-items: center;
@@ -384,9 +394,6 @@
             color: #6b7280;
         }
 
-        /* =====================
-                                                                                                       PAGINATION WRAPPER
-                                                                                                    ===================== */
         .pagination-wrapper {
             display: flex;
             align-items: center;
@@ -399,7 +406,6 @@
         }
 
 
-        /* PAGINATION */
         .pagination {
             display: flex;
             align-items: center;
@@ -461,9 +467,6 @@
             color: #ffffff;
         }
 
-        /* =====================
-                                                                                   MODAL OVERLAY
-                                                                                ===================== */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -474,9 +477,6 @@
             z-index: 999;
         }
 
-        /* =====================
-                                                                                   MODAL DETAIL PRODUK
-                                                                                ===================== */
         .modal-edit-produk {
             background: #ffffff;
             width: 820px;
@@ -514,7 +514,6 @@
             margin-left: 6px;
         }
 
-        /* HEADER MODAL */
         .modal-header h2 {
             font-size: 20px;
             color: #083b6f;
@@ -524,7 +523,6 @@
             color: #64748b;
         }
 
-        /* USAHA CARD */
         .usaha-header {
             display: flex;
             gap: 16px;
@@ -545,8 +543,7 @@
             font-size: 13px;
         }
 
-        /* BUTTON */
-        .btn-detail-produk {
+=        .btn-detail-produk {
             margin-top: 16px;
             background: #083b6f;
             color: #fff;
@@ -592,92 +589,75 @@
         }
     </style>
     <script>
-        document.addEventListener('click', function(e) {
+        document.addEventListener("DOMContentLoaded", function() {
 
-            const btn = e.target.closest('.btn-edit-produk');
-            if (!btn) return;
+            const searchInput = document.getElementById('search');
+            const refreshBtn = document.getElementById('refreshBtn');
+            const tbody = document.getElementById('produk-body');
 
-            const id = btn.dataset.id;
-
-            fetch(`{{ url('/admin/produk') }}/${id}/modal`)
-                .then(res => res.json())
-                .then(data => {
-
-                    document.getElementById('m-nama-usaha').innerText = data.nama_usaha;
-                    document.getElementById('m-nama-produk').innerText = data.nama_produk;
-                    document.getElementById('m-jenis-produk').innerText = data.jenis_produk;
-                    document.getElementById('m-komposisi').innerText = data.komposisi;
-                    document.getElementById('m-berat').innerText = data.berat_bersih;
-                    document.getElementById('m-kemasan').innerText = data.kemasan;
-                    document.getElementById('m-tanggal').innerText = data.tanggal_input ?? '-';
-
-                    document.getElementById('m-verifikasi').innerHTML =
-                        data.verifikasi === 'disetujui' ?
-                        '<span class="badge-success">Terdaftar PIRT</span>' :
-                        '<span class="badge-warning">Menunggu Persetujuan</span>';
-
-                    document.getElementById('editProdukModal').style.display = 'flex';
-                });
-        });
-
-        // klik overlay untuk tutup
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('modal-overlay')) {
-                e.target.style.display = 'none';
-            }
-        });
-        const searchInput = document.getElementById('search');
-        const tbody = document.getElementById('produk-body');
-
-        searchInput.addEventListener('keyup', function() {
-            fetch(`{{ route('admin.produk') }}?q=${this.value}`, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(res => res.json())
-                .then(data => {
-                    tbody.innerHTML = '';
-
-                    if (data.length === 0) {
-                        tbody.innerHTML = `
-                <tr>
-                    <td colspan="8" style="text-align:center;padding:20px">
-                        Data tidak ditemukan
-                    </td>
-                </tr>`;
-                        return;
-                    }
-
-                    data.forEach((item, index) => {
-                        tbody.innerHTML += `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td>${item.nama_produk}</td>
-                    <td>${item.jenis_usaha}</td>
-                    <td>${item.komposisi}</td>
-                    <td>${item.berat_bersih} gr</td>
-                    <td>${item.kemasan}</td>
-                    <td>
-                        ${
-                            item.verifikasi === 'disetujui'
-                            ? '<span class="badge-success">Terdaftar PIRT</span>'
-                            : '<span class="badge-warning">Menunggu persetujuan</span>'
+            function loadData(keyword = '') {
+                fetch(`{{ route('admin.produk') }}?q=${keyword}`, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
                         }
-                    </td>
-                    <td class="action">
-                        <a href="javascript:void(0)"
-                           class="icon-btn btn-edit-produk"
-                           data-id="${item.id}">
-                            <img src="{{ asset('img/eye.png') }}">
-                        </a>
-                    </td>
-                </tr>
-            `;
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+
+                        tbody.innerHTML = '';
+
+                        if (data.length === 0) {
+                            tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align:center;padding:20px">
+                            Data tidak ditemukan
+                        </td>
+                    </tr>`;
+                            return;
+                        }
+
+                        data.forEach((item, index) => {
+                            tbody.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${item.nama_produk}</td>
+                        <td>${item.jenis_usaha}</td>
+                        <td>${item.komposisi}</td>
+                        <td>${item.berat_bersih} gr</td>
+                        <td>${item.kemasan}</td>
+                        <td>
+                            ${
+                                item.verifikasi === 'disetujui'
+                                ? '<span class="badge-success">Terdaftar PIRT</span>'
+                                : '<span class="badge-warning">Menunggu persetujuan</span>'
+                            }
+                        </td>
+                        <td class="action">
+                            <a href="javascript:void(0)"
+                               class="icon-btn btn-edit-produk"
+                               data-id="${item.id}">
+                                <img src="{{ asset('img/eye.png') }}">
+                            </a>
+                        </td>
+                    </tr>`;
+                        });
+
                     });
-                });
+            }
+
+            searchInput.addEventListener('keyup', function() {
+                loadData(this.value);
+            });
+
+            refreshBtn.addEventListener('click', function() {
+                searchInput.value = '';
+                loadData();
+            });
+
         });
     </script>
+
+
 
 
 @endsection

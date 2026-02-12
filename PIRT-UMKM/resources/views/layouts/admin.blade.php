@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>@yield('title', 'Admin Dashboard')</title>
 
-    {{-- CSS LAYOUTING (dipakai semua halaman admin) --}}
     <style>
         * {
             margin: 0;
@@ -22,7 +21,6 @@
             min-height: 100vh;
         }
 
-        /* SIDEBAR */
         .sidebar {
             width: 240px;
             background: #0b3c6d;
@@ -58,7 +56,6 @@
             border-top: 1px solid rgba(255,255,255,0.2);
         }
 
-        /* MAIN CONTENT */
         .main-content {
             flex: 1;
             padding: 30px;
@@ -71,7 +68,6 @@
 
 <div class="admin-wrapper">
 
-    {{-- SIDEBAR LANGSUNG DI LAYOUT --}}
     <aside class="sidebar">
         <div>
             <div class="logo">Dashboard Kit</div>
@@ -89,7 +85,6 @@
         </div>
     </aside>
 
-    {{-- CONTENT --}}
     <main class="main-content">
         @yield('content')
     </main>

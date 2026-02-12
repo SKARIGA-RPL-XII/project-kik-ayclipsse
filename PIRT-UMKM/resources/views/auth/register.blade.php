@@ -17,6 +17,7 @@
             padding: 30px;
         }
 
+
         .container {
             width: 100%;
             height: calc(100vh - 60px);
@@ -25,7 +26,11 @@
             overflow: hidden;
         }
 
-        /* ===== LEFT : FORM ===== */
+        .logo img {
+            width: 80px;
+            margin-bottom: 10px;
+        }
+
         .left {
             width: 50%;
             background: #fff;
@@ -74,12 +79,29 @@
             position: relative;
         }
 
-        .eye {
+        .password .eye {
             position: absolute;
-            right: 10px;
+            right: 12px;
             top: 50%;
             transform: translateY(-50%);
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
+        }
+
+        .password .eye img {
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+            opacity: 0.7;
+            transition: 0.2s;
+        }
+
+        .password .eye:hover img {
+            opacity: 1;
         }
 
         button {
@@ -108,7 +130,6 @@
             margin-left: 3px;
         }
 
-        /* ===== RIGHT : ORBIT ===== */
         .right {
             width: 50%;
             background: linear-gradient(180deg, #d8eef9, #9ccfe8);
@@ -117,6 +138,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            border-radius: 10px;
         }
 
         .right h1 {
@@ -159,15 +181,25 @@
         }
 
         .center {
-            width: 60px;
-            height: 60px;
-            background: #0b3c6d;
-            border-radius: 50%;
+            width: auto;
+            height: auto;
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+
+        .center img {
+            width: 90px;
+            /* sesuaikan ukuran */
+            height: auto;
+            object-fit: contain;
+        }
+
+
 
         .dot {
             width: 22px;
@@ -177,12 +209,39 @@
             position: absolute;
         }
 
-        .d1 { top: -11px; left: 50%; transform: translateX(-50%); }
-        .d2 { right: -11px; top: 50%; transform: translateY(-50%); }
-        .d3 { bottom: -11px; left: 50%; transform: translateX(-50%); }
-        .d4 { left: -11px; top: 50%; transform: translateY(-50%); }
-        .d5 { top: 45px; right: 70px; }
-        .d6 { bottom: 45px; left: 70px; }
+        .d1 {
+            top: -11px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .d2 {
+            right: -11px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .d3 {
+            bottom: -11px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .d4 {
+            left: -11px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .d5 {
+            top: 45px;
+            right: 70px;
+        }
+
+        .d6 {
+            bottom: 45px;
+            left: 70px;
+        }
 
         .desc {
             font-size: 14px;
@@ -191,13 +250,13 @@
             text-align: center;
         }
 
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .container {
                 flex-direction: column-reverse;
             }
 
-            .left, .right {
+            .left,
+            .right {
                 width: 100%;
             }
 
@@ -210,62 +269,73 @@
 
 <body>
 
-<div class="container">
+    <div class="container">
 
-    <!-- LEFT : FORM -->
-    <div class="left">
-        <h2>Registrasi Akun</h2>
-        <p class="subtitle">Lengkapi data berikut untuk registrasi akun</p>
-
-        <form>
-            <label>Nama Lengkap</label>
-            <input type="text" placeholder="Raysha Wijaya">
-
-            <label>Email</label>
-            <input type="email" placeholder="contoh@gmail.com">
-
-            <label>Password</label>
-            <div class="password">
-                <input type="password" placeholder="********">
-                <span class="eye">👁</span>
+        <!-- LEFT : FORM -->
+        <div class="left">
+            <div class="logo">
+                <img src="img/logo.png" alt="Logo UMKM">
             </div>
+            <h2>Registrasi Akun</h2>
+            <p class="subtitle">Lengkapi data berikut untuk registrasi akun</p>
 
-            <label>Konfirmasi Password</label>
-            <div class="password">
-                <input type="password" placeholder="********">
-                <span class="eye">👁</span>
-            </div>
+            <form method="POST" action="{{ route('register.store') }}">
+                @csrf
+                <label>Nama Lengkap</label>
+                <input type="text" name="nama" placeholder="Raysha Wijaya" value="{{ old('nama') }}">
 
-            <button type="submit">Registrasi</button>
-        </form>
+                <label>Email</label>
+                <input type="email" name="email" placeholder="contoh@gmail.com" value="{{ old('email') }}">
 
-        <p class="login-text">
-            Sudah memiliki akun?
-            <a href="{{ url('login') }}">Masuk</a>
-        </p>
-    </div>
+                <label>Password</label>
+                <div class="password">
+                    <input type="password" name="password" placeholder="********">
+                    <span class="eye">
+                        <img src="img/eye.png" onclick="togglePassword()">
+                    </span>
+                </div>
 
-    <!-- RIGHT : ORBIT -->
-    <div class="right">
-        <h1>Kelola <span>UMKM</span><br>Lebih Mudah</h1>
+                <label>Konfirmasi Password</label>
+                <div class="password">
+                    <input type="password" name="password_confirmation" placeholder="********">
+                    <span class="eye">
+                        <img src="img/eye.png" onclick="togglePassword()">
+                    </span>
+                </div>
 
-        <div class="orbit">
-            <div class="center"></div>
-            <span class="dot d1"></span>
-            <span class="dot d2"></span>
-            <span class="dot d3"></span>
-            <span class="dot d4"></span>
-            <span class="dot d5"></span>
-            <span class="dot d6"></span>
+                <button type="submit">Registrasi</button>
+            </form>
+
+            <p class="login-text">
+                Sudah memiliki akun?
+                <a href="{{ url('login') }}">Masuk</a>
+            </p>
         </div>
 
-        <p class="desc">
-            Satu platform untuk pengelolaan <strong>PIRT</strong> dan
-            <strong>UMKM</strong> secara efektif dan terstruktur.
-        </p>
+        <!-- RIGHT : ORBIT -->
+        <div class="right">
+            <h1>Kelola <span>UMKM</span><br>Lebih Mudah</h1>
+
+            <div class="orbit">
+                <div class="center">
+                    <img src="img/logo.png" alt="">
+                </div>
+                <span class="dot d1"></span>
+                <span class="dot d2"></span>
+                <span class="dot d3"></span>
+                <span class="dot d4"></span>
+                <span class="dot d5"></span>
+                <span class="dot d6"></span>
+            </div>
+
+            <p class="desc">
+                Satu platform untuk pengelolaan <strong>PIRT</strong> dan
+                <strong>UMKM</strong> secara efektif dan terstruktur.
+            </p>
+        </div>
+
     </div>
 
-</div>
-
 </body>
+
 </html>

@@ -22,7 +22,6 @@
             margin-bottom: 40px;
         }
 
-        /* ===== STEP ===== */
         .steps {
             display: flex;
             align-items: center;
@@ -58,7 +57,6 @@
             background: #08315f;
         }
 
-        /* ===== FORM ===== */
         .form-group {
             margin-bottom: 18px;
         }
@@ -90,7 +88,6 @@
             color: #9aa8bd;
         }
 
-        /* ===== UPLOAD ===== */
         .upload-btn {
             width: 140px;
             padding: 7px;
@@ -117,8 +114,6 @@
             display: none;
         }
 
-
-        /* ===== BUTTON ===== */
         .buttons {
             display: flex;
             justify-content: space-between;
@@ -152,48 +147,45 @@
     <div class="container">
         <h2>Pendaftaran Usaha</h2>
 
-        <!-- STEP -->
         <div class="steps">
             <div class="step active">1</div>
             <div class="line"></div>
-            <div class="step active">2</div>
-            <div class="line"></div>
-            <div class="step inactive">3</div>
+            <div class="step inactive">2</div>
         </div>
 
-        <form>
+        <form method="POST" action="{{ route('usaha.pendaftaran.store') }}" enctype="multipart/form-data">
+            @csrf
             <div class="form-group">
                 <label>Nama Usaha</label>
-                <input type="text" placeholder="Masukan disini..">
+                <input type="text" name="nama_usaha" value="{{ old('nama_usaha') }}" placeholder="Masukan disini..">
             </div>
 
             <div class="form-group">
                 <label>Jenis Produk</label>
-                <select>
-                    <option>Pilih jenis Produk</option>
+                <select name="jenis_produk">
+                    <option value="">Pilih jenis Produk</option>
+                    <option value="Makanan">Makanan</option>
+                    <option value="Minuman">Minuman</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label>Alamat Usaha</label>
-                <textarea placeholder="Masukan disini.."></textarea>
+                <textarea name="alamat_usaha" placeholder="Masukan disini..">{{ old('alamat_usaha') }}</textarea>
             </div>
 
             <div class="form-group">
                 <label>Tanggal Berdiri</label>
-                <input type="text" placeholder="Masukan disini..">
+                <input type="date" name="tanggal_berdiri" value="{{ old('tanggal_berdiri') }}">
             </div>
 
             <div class="form-group">
                 <label>Unggah Logo Usaha</label>
-
-                <input type="file" id="logo" class="file-hidden">
-
+                <input type="file" name="logo" id="logo" class="file-hidden">
                 <button type="button" class="upload-btn" onclick="document.getElementById('logo').click()">
                     Unggah disini
                 </button>
             </div>
-
 
             <div class="buttons">
                 <button type="button" class="btn btn-prev">Sebelumnya</button>
@@ -203,3 +195,4 @@
     </div>
 
 </body>
+</html>

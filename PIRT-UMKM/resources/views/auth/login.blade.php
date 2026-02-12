@@ -26,7 +26,6 @@
             overflow: hidden;
         }
 
-        /* ===== KIRI (GAMBAR / ILUSTRASI) ===== */
         .left {
             width: 50%;
             background: linear-gradient(180deg, #d8eef9, #9ccfe8);
@@ -48,7 +47,6 @@
             font-style: italic;
         }
 
-        /* ORBIT */
         .orbit {
             width: 280px;
             height: 280px;
@@ -77,15 +75,24 @@
         }
 
         .center {
-            width: 60px;
-            height: 60px;
-            background: #0b3c6d;
-            border-radius: 50%;
+            width: auto;
+            height: auto;
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+
+        .center img {
+            width: 90px;
+            /* sesuaikan ukuran */
+            height: auto;
+            object-fit: contain;
+        }
+
 
         .dot {
             width: 22px;
@@ -136,7 +143,6 @@
             text-align: center;
         }
 
-        /* ===== KANAN (FORM LOGIN) ===== */
         .right {
             width: 50%;
             background: #fff;
@@ -148,7 +154,7 @@
         }
 
         .logo img {
-            width: 45px;
+            width: 80px;
             margin-bottom: 15px;
         }
 
@@ -193,10 +199,27 @@
 
         .password .eye {
             position: absolute;
-            right: 10px;
+            right: 12px;
             top: 50%;
             transform: translateY(-50%);
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
+        }
+
+        .password .eye img {
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+            opacity: 0.7;
+            transition: 0.2s;
+        }
+
+        .password .eye:hover img {
+            opacity: 1;
         }
 
         button {
@@ -251,7 +274,9 @@
             <h1>Kelola <span>UMKM</span> Lebih<br>Mudah di Satu Platform</h1>
 
             <div class="orbit">
-                <div class="center"></div>
+                <div class="center">
+                    <img src="img/logo.png" alt="">
+                </div>
                 <span class="dot d1"></span>
                 <span class="dot d2"></span>
                 <span class="dot d3"></span>
@@ -270,7 +295,7 @@
         <!-- KANAN -->
         <div class="right">
             <div class="logo">
-                <img src="logo-umkm.png" alt="Logo UMKM">
+                <img src="img/logo.png" alt="Logo UMKM">
             </div>
 
             <h2>Masuk Akun Anda</h2>
@@ -290,7 +315,9 @@
                 <label>Password</label>
                 <div class="password">
                     <input type="password" name="password" id="password" placeholder="********" required>
-                    <span class="eye" onclick="togglePassword()">👁</span>
+                    <span class="eye" onclick="togglePassword()">
+                        <img src="img/eye.png" alt="">
+                    </span>
                 </div>
 
                 @error('password')

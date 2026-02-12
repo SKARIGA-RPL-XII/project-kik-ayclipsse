@@ -5,36 +5,31 @@
 @section('content')
 
     <div class="page-header">
-        <h1>Selamat Datang Kembali <span>Raysha!</span></h1>
+        <h1>Persetujuan</h1>
         <p>Kelola pendaftaran PIRT dan produk usahamu di sini.</p>
     </div>
 
     <div class="card">
 
         <div class="table-card">
-            <!-- TABLE HEADER -->
-            <div class="table-header">
-                <button class="nav-btn">
-                    ‹
-                </button>
-
-                <h3>Tabel Usaha</h3>
-
-                <button class="nav-btn">
-                    ›
-                </button>
-            </div>
-
-            <!-- TOP BAR -->
-            <div class="table-top">
+            <div class="approval-top">
+                <div class="tab-wrapper">
+                    <button class="tab-btn active">Tabel Usaha</button>
+                    <button class="tab-btn">Tabel Produk</button>
+                </div>
                 <div class="search-wrapper">
-                    <img src="{{ asset('img/search.png') }}" class="search-icon" alt="search">
-                    <input type="text" placeholder="Cari Data...">
+                    <div class="search-input">
+                        <img src="{{ asset('img/search.png') }}" class="search-icon">
+                        <input type="text" id="searchInput" placeholder="Cari Data...">
+                    </div>
+
+                    <button type="button" class="refresh-btn" id="refreshBtn">
+                        <img src="{{ asset('img/refresh.png') }}">
+                    </button>
                 </div>
             </div>
 
 
-            <!-- TABLE -->
             <div class="table-container">
                 <table class="custom-table">
                     <thead>
@@ -48,7 +43,7 @@
                         </tr>
                     </thead>
 
-                    <tbody>
+                    <tbody id="tableBody">
                         <tr>
                             <td>1</td>
                             <td>DAPUR NUSANTARA</td>
@@ -79,17 +74,48 @@
                                 <a href="#" class="icon-btn">
                                     <img src="{{ asset('img/edit-2.png') }}">
                                 </a>
-                                <a href="#" class="icon-btn">
+                                <a href="javascript:void(0)" class="icon-btn btn-delete" data-id="1">
                                     <img src="{{ asset('img/trash.png') }}">
                                 </a>
+
                             </td>
                         </tr>
                     </tbody>
-
                 </table>
+
+            </div>
+            <div class="modal-overlaydelete" id="deleteModal">
+                <div class="modal-boxdelete">
+
+                    <div class="modal-icondelete warning">
+                        !
+                    </div>
+
+                    <h3>Yakin ingin menghapus data ini?</h3>
+                    <p>Data yang sudah dihapus tidak dapat dikembalikan.</p>
+
+                    <div class="modal-actionsdelete">
+                        <button class="btn-cancel" id="cancelDelete">Cancel</button>
+                        <button class="btn-submit" id="confirmDelete">Submit</button>
+                    </div>
+
+                </div>
             </div>
 
-            <!-- FOOTER -->
+            <div class="modal-overlaydelete" id="successModal">
+                <div class="modal-boxdelete">
+
+                    <div class="modal-icondelete success">
+                        🗑
+                    </div>
+
+                    <h3>Berhasil menghapus data</h3>
+                    <p>Data telah dihapus secara permanen</p>
+
+                </div>
+            </div>
+
+
             <div class="table-footer">
                 <div class="showing">
                     Showing
@@ -123,7 +149,6 @@
 
 
     <style>
-        /* CARD */
         .table-card {
             background: #ffffff;
             border-radius: 10px;
@@ -131,9 +156,6 @@
             margin-top: 16px;
         }
 
-        /* =====================
-                               TOP BAR
-                            ===================== */
         .table-top {
             display: flex;
             justify-content: space-between;
@@ -142,44 +164,85 @@
             gap: 12px;
         }
 
-        /* SEARCH */
+        .tab-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tab-btn {
+            padding: 8px 18px;
+            border-radius: 6px;
+            border: 1px solid #0b2e5b;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        .tab-btn.active {
+            background: #0b2e5b;
+            color: #fff;
+        }
+
+        .approval-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
         .search-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-input {
             position: relative;
-            flex: 1;
-            max-width: 620px;
-            gap: 5px;
         }
 
-        .search-wrapper input {
-            width: 100%;
-            height: 40px;
-            padding: 0 14px 0 42px;
-            font-size: 14px;
-            border: 1px solid #374151;
-            border-radius: 5px;
+        .search-input input {
+            width: 260px;
+            height: 38px;
+            padding: 0 14px 0 40px;
+            border-radius: 6px;
+            border: 1px solid #0b2e5b;
             outline: none;
+            font-size: 13px;
             color: #374151;
-            flex: 1;
         }
 
-        .search-wrapper input::placeholder {
+        .search-input input::placeholder {
             color: #9ca3af;
         }
 
-        /* ICON SEARCH */
         .search-icon {
             position: absolute;
-            left: 14px;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
-            width: 18px;
-            height: 18px;
-            opacity: 0.9;
+            width: 15px;
+            opacity: 0.8;
         }
 
-        /* =====================
-                               BUTTON TAMBAH
-                            ===================== */
+        .refresh-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 6px;
+            border: 1px solid #0b2e5b;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .refresh-btn img {
+            width: 16px;
+        }
+
+        .refresh-btn:hover {
+            background: #f1f5f9;
+        }
+
         .btn-primary {
             height: 40px;
             background: #083b6f;
@@ -197,9 +260,6 @@
             background: #062f57;
         }
 
-        /* =====================
-       TABLE HEADER
-    ===================== */
         .table-header {
             background: #e9eef3;
             border-radius: 8px;
@@ -218,7 +278,6 @@
             color: #000000;
         }
 
-        /* NAV BUTTON */
         .nav-btn {
             width: 34px;
             height: 34px;
@@ -238,14 +297,12 @@
             background: #062f57;
         }
 
-        /* TABLE CONTAINER */
         .table-container {
             border: 1px solid #cbd5e1;
             border-radius: 8px;
             overflow: hidden;
         }
 
-        /* TABLE */
         .custom-table {
             width: 100%;
             border-collapse: collapse;
@@ -279,7 +336,6 @@
         }
 
 
-        /* BADGE */
         .badge-success {
             display: inline-flex;
             align-items: center;
@@ -310,7 +366,6 @@
             border-radius: 20px;
             background: #eef2f7;
             color: #475569;
-            /* border: 1px solid #cbd5e1; */
         }
 
         .badge-warning::before {
@@ -322,7 +377,6 @@
         }
 
 
-        /* ACTION */
         .action {
             display: flex;
             justify-content: center;
@@ -331,7 +385,6 @@
         }
 
 
-        /* FOOTER */
         .table-footer {
             margin-top: 10px;
             display: flex;
@@ -341,14 +394,12 @@
             color: #6b7280;
         }
 
-        /* ACTION ICON */
         .action {
             display: flex;
             justify-content: center;
             gap: 10px;
         }
 
-        /* ICON BUTTON */
         .icon-btn {
             width: 28px;
             height: 28px;
@@ -382,14 +433,77 @@
             color: #6b7280;
         }
 
-        /* SHOWING TEXT */
+        .modal-overlaydelete {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .modal-boxdelete {
+            background: #fff;
+            width: 400px;
+            padding: 30px;
+            border-radius: 14px;
+            text-align: center;
+        }
+
+        .modal-icondelete {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .modal-icondelete.warning {
+            background: #fde68a;
+            color: #f59e0b;
+        }
+
+        .modal-icondelete.success {
+            background: #fecaca;
+            color: #dc2626;
+        }
+
+        .modal-actionsdelete {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn-cancel {
+            padding: 8px 18px;
+            border-radius: 8px;
+            border: 1px solid #ef4444;
+            background: #fff;
+            color: #ef4444;
+            cursor: pointer;
+        }
+
+        .btn-submit {
+            padding: 8px 18px;
+            border-radius: 8px;
+            border: none;
+            background: #083b6f;
+            color: #fff;
+            cursor: pointer;
+        }
+
+
         .showing {
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
-        /* DROPDOWN NUMBER */
         .showing-count {
             display: inline-flex;
             align-items: center;
@@ -407,9 +521,6 @@
             color: #6b7280;
         }
 
-        /* =====================
-                                       PAGINATION WRAPPER
-                                    ===================== */
         .pagination-wrapper {
             display: flex;
             align-items: center;
@@ -422,7 +533,7 @@
         }
 
 
-        /* PAGINATION */
+
         .pagination {
             display: flex;
             align-items: center;
@@ -484,4 +595,90 @@
             color: #ffffff;
         }
     </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const searchInput = document.getElementById("searchInput");
+            const refreshBtn = document.getElementById("refreshBtn");
+
+            function getRows() {
+                return document.querySelectorAll("#tableBody tr");
+            }
+
+            if (searchInput) {
+                searchInput.addEventListener("input", function() {
+                    const keyword = this.value.toLowerCase();
+                    const rows = getRows();
+
+                    rows.forEach(row => {
+                        const text = row.textContent.toLowerCase();
+                        row.style.display = text.includes(keyword) ? "" : "none";
+                    });
+                });
+            }
+
+            if (refreshBtn) {
+                refreshBtn.addEventListener("click", function() {
+                    searchInput.value = "";
+
+                    const rows = getRows();
+                    rows.forEach(row => {
+                        row.style.display = "table-row";
+                    });
+                });
+            }
+
+
+            let selectedRow = null;
+
+            const deleteModal = document.getElementById("deleteModal");
+            const successModal = document.getElementById("successModal");
+            const confirmDelete = document.getElementById("confirmDelete");
+            const cancelDelete = document.getElementById("cancelDelete");
+
+            document.addEventListener("click", function(e) {
+
+                const deleteBtn = e.target.closest(".btn-delete");
+                if (deleteBtn) {
+                    selectedRow = deleteBtn.closest("tr");
+                    deleteModal.style.display = "flex";
+                }
+
+                if (e.target === deleteModal) {
+                    deleteModal.style.display = "none";
+                }
+
+                if (e.target === successModal) {
+                    successModal.style.display = "none";
+                }
+            });
+
+            if (cancelDelete) {
+                cancelDelete.addEventListener("click", function() {
+                    deleteModal.style.display = "none";
+                });
+            }
+
+            if (confirmDelete) {
+                confirmDelete.addEventListener("click", function() {
+
+                    if (selectedRow) {
+                        selectedRow.remove();
+                    }
+
+                    deleteModal.style.display = "none";
+                    successModal.style.display = "flex";
+
+                    setTimeout(() => {
+                        successModal.style.display = "none";
+                    }, 1500);
+
+                });
+            }
+
+        });
+    </script>
+
+
+
 @endsection

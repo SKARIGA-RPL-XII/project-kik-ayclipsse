@@ -110,4 +110,13 @@ class AdminController extends Controller
 
         return view('admin.usaha', compact('usaha'));
     }
+    public function usahaDestroy($id)
+    {
+        $usaha = Usaha::findOrFail($id);
+        $usaha->delete();
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
 }

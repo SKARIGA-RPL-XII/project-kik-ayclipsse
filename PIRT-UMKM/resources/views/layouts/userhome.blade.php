@@ -11,7 +11,6 @@
 <body>
 
     <div class="dashboard-wrapper">
-        <!-- SIDEBAR -->
         <aside class="sidebar">
             <div class="sidebar-logo">
                 <div class="logo-icon">●</div>
@@ -37,7 +36,6 @@
             </div>
         </aside>
 
-        <!-- MAIN -->
         <main class="main-content">
             @yield('content')
         </main>

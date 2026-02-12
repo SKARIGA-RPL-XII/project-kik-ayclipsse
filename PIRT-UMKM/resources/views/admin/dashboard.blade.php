@@ -9,9 +9,7 @@
         <p>Kelola pendaftaran PIRT dan produk usahamu di sini.</p>
     </div>
 
-    <!-- CARDS -->
     <div class="cards">
-        <!-- TOTAL USAHA -->
         <div class="stat-card usaha">
             <div class="stat-icon">🏢</div>
             <div class="stat-content">
@@ -21,7 +19,6 @@
             </div>
         </div>
 
-        <!-- TOTAL PRODUK -->
         <div class="stat-card produk">
             <div class="stat-icon">📦</div>
             <div class="stat-content">
@@ -31,7 +28,6 @@
             </div>
         </div>
 
-        <!-- PERSETUJUAN -->
         <div class="stat-card persetujuan">
             <div class="stat-icon">✔️</div>
             <div class="stat-content">
@@ -41,14 +37,12 @@
             </div>
         </div>
     </div>
-    <!-- MAIN GRID -->
     <div class="main-grid">
         <div class="chart-card">
             <h3>Rekap Aktivitas Mingguan</h3>
             <canvas id="myChart"></canvas>
         </div>
 
-        <!-- CHART -->
         <div class="chart-card">
             <div class="calendar">
                 <h3>Kalender</h3>
@@ -116,7 +110,6 @@
         </div>
     </div>
 
-    {{-- CSS DASHBOARD --}}
     <style>
         .header h1 {
             font-size: 26px;
@@ -132,7 +125,6 @@
             margin-bottom: 25px;
         }
 
-        /* STAT CARDS MODEL BARU */
         .cards {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -150,7 +142,6 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
         }
 
-        /* ICON */
         .stat-icon {
             width: 48px;
             height: 48px;
@@ -161,7 +152,6 @@
             font-size: 22px;
         }
 
-        /* CONTENT */
         .stat-content h4 {
             font-size: 14px;
             font-weight: 500;
@@ -179,14 +169,12 @@
             color: #777;
         }
 
-        /* WARNA VARIAN */
         .stat-card.usaha {
             background: #fff1f1;
         }
 
         .stat-card.usaha .stat-icon {
             background: #ffdddd;
-            /* color: #c62828; */
         }
 
         .stat-card.produk {
@@ -199,7 +187,6 @@
         }
 
 
-        /* GRID 3 CARD */
         .cards {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -207,7 +194,6 @@
             margin-bottom: 20px;
         }
 
-        /* VARIAN PERSETUJUAN */
         .stat-card.persetujuan {
             background: #eafaf1;
         }
@@ -217,50 +203,41 @@
             color: #1b8f5a;
         }
 
-        /* RESPONSIVE */
         @media(max-width: 992px) {
             .cards {
                 grid-template-columns: 1fr;
             }
         }
 
-        /* MAIN GRID FIX */
         .main-grid {
             display: grid;
             grid-template-columns: 2.5fr 1fr;
-            /* chart lebih lebar */
             gap: 20px;
             align-items: stretch;
-            /* tinggi sejajar */
         }
 
-        /* CHART CARD */
         .chart-card {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
-        /* Chart height */
         .chart-card canvas {
             width: 100% !important;
             height: 280px !important;
         }
 
-        /* CALENDAR CARD */
-        .calendar {
+=        .calendar {
             display: flex;
             flex-direction: column;
             height: 100%;
         }
 
-        /* Kalender table full tinggi */
-        .calendar table {
+=        .calendar table {
             flex: 1;
         }
 
 
-        /* CHART */
         .chart-card,
         .calendar {
             background: #fff;
@@ -269,8 +246,7 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
 
-        /* CALENDAR */
-        .calendar h3 {
+=        .calendar h3 {
             margin-bottom: 10px;
         }
 

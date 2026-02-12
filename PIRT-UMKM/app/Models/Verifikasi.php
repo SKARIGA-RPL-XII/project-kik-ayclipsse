@@ -14,17 +14,16 @@ class Verifikasi extends Model
         'hasil_verifikasi',
         'keterangan'
     ];
-    public function produk()
-    {
-        return $this->belongsTo(Produk::class);
-    }
+
+    // verifikasi milik satu dokumen
     public function dokumen()
     {
         return $this->belongsTo(Dokumen::class, 'dokumen_id');
     }
 
+    // verifikasi bisa punya satu sertifikat
     public function sertifikat()
     {
-        return $this->hasOne(Sertifikat::class);
+        return $this->hasOne(Sertifikat::class, 'verifikasi_id');
     }
 }
