@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class InspeksiDetail extends Model
 {
- protected $table = 'inspeksi_detail';
+    protected $table = 'inspeksi_detail';
 
     protected $fillable = [
         'inspeksi_id',
@@ -16,8 +16,8 @@ class InspeksiDetail extends Model
         'bobot'
     ];
 
-    public function variable()
+    public function variabel()
     {
-        return $this->belongsTo(Variable::class);
+        return $this->belongsTo(Variabel::class);
     }
 }

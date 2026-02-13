@@ -198,7 +198,6 @@
                         <input type="text" class="readonly" value="{{ $usaha->jenis_usaha }}" readonly>
                     </div>
                 </div>
-                <!-- PRODUK PERTAMA -->
                 <div class="card">
                     <div class="card-header" onclick="toggleCard(this)">
                         <h3>Produk 1</h3>

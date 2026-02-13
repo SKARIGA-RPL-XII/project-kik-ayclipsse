@@ -12,7 +12,6 @@
     <div class="card">
         <div class="table-card">
 
-            <!-- TOP BAR -->
             <div class="approval-top">
                 <div class="tab-wrapper">
                     <a href="{{ route('admin.persetujuan', ['type' => 'usaha']) }}"
@@ -41,7 +40,6 @@
 
             </div>
 
-            <!-- TABLE -->
             <div class="table-container">
                 <table class="custom-table" id="tableBody">
                     <thead>
@@ -81,7 +79,6 @@
                                 </td>
 
                                 <td>
-                                    <!-- Tombol buka modal -->
                                     <button class="btn-approval" data-id="{{ $item->id }}"
                                         data-type="{{ $type }}">
                                         Approve
@@ -117,7 +114,6 @@
         </div>
     </div>
 
-    <!-- DELETE MODAL -->
     <div class="modal-overlaydelete" id="deleteModal">
         <div class="modal-boxdelete">
             <div class="modal-icondelete warning">!</div>
@@ -138,7 +134,6 @@
         </div>
     </div>
 
-    <!-- EDIT MODAL -->
     <div class="modal-overlay" id="editModal">
         <div class="modal-detail">
             <h2>Detail Perubahan Usaha</h2>
@@ -167,7 +162,7 @@
     </div>
 
     <style>
-        /* ===== TABLE STYLE ===== */
+        
         .table-card {
             background: #fff;
             padding: 20px;
@@ -257,7 +252,6 @@
             width: 16px;
         }
 
-        /* ===== MODAL STYLE ===== */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -319,7 +313,6 @@
             cursor: pointer;
         }
 
-        /* DELETE MODAL */
         .modal-overlaydelete {
             position: fixed;
             inset: 0;
@@ -573,7 +566,6 @@
             border-radius: 20px;
             background: #e6f9ec;
             color: #16a34a;
-            /* border: 1px solid #16a34a; */
         }
 
         .badge-success::before {
@@ -919,23 +911,20 @@
                     });
             }
 
-            // 🔥 SEARCH REALTIME (DEBOUNCE biar halus)
             searchInput.addEventListener("keyup", function() {
 
                 clearTimeout(debounceTimer);
 
                 debounceTimer = setTimeout(() => {
                     loadData(this.value);
-                }, 300); // delay 300ms
+                }, 300);
             });
 
-            // 🔄 REFRESH
             refreshBtn.addEventListener("click", function() {
                 searchInput.value = "";
                 loadData();
             });
 
-            // 🔁 TAB SWITCH REALTIME
             tabs.forEach(tab => {
                 tab.addEventListener("click", function(e) {
                     e.preventDefault();

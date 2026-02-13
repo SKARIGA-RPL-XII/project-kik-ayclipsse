@@ -5,7 +5,7 @@
 @section('content')
 
     <div class="page-header">
-        <h1>Selamat Datang Kembali <span>Raysha!</span></h1>
+        <h1>Produk</h1>
         <p>Kelola pendaftaran PIRT dan produk usahamu di sini.</p>
     </div>
 
@@ -65,10 +65,10 @@
 
                                 </td>
                                 <td class="action">
-                                    <a href="javascript:void(0)" class="icon-btn btn-edit-produk"
-                                        data-id="{{ $item->id }}">
+                                    <a href="{{ route('admin.produk.detail', $item->id) }}" class="icon-btn">
                                         <img src="{{ asset('img/eye.png') }}">
                                     </a>
+
                                 </td>
                                 <td>
                                     <a href="javascript:void(0)" class="icon-btn btn-delete">

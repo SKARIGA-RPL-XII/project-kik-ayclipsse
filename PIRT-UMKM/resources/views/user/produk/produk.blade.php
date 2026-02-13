@@ -75,16 +75,11 @@
                                             <img src="{{ asset('img/edit-2.png') }}">
                                         </a>
 
-                                        <form action="{{ route('produk.destroy', $item->id) }}" method="POST"
-                                            onsubmit="return confirm('Yakin ingin menghapus produk ini?')"
-                                            style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
+                                        <button type="button" class="icon-btn btn-delete" data-id="{{ $item->id }}"
+                                            data-url="{{ route('produk.destroy', $item->id) }}">
+                                            <img src="{{ asset('img/trash.png') }}">
+                                        </button>
 
-                                            <button type="submit" class="icon-btn" style="border:none;background:none;">
-                                                <img src="{{ asset('img/trash.png') }}">
-                                            </button>
-                                        </form>
 
                                     </td>
                                 </tr>
@@ -180,29 +175,93 @@
         <script>
             document.addEventListener("DOMContentLoaded", function() {
 
+                const deleteModal = document.getElementById("deleteModal");
+                const successModal = document.getElementById("successModal");
+                const cancelDelete = document.getElementById("cancelDelete");
+                const confirmDelete = document.getElementById("confirmDelete");
+
                 const searchInput = document.getElementById("searchInput");
                 const refreshBtn = document.getElementById("refreshBtn");
 
-                function getRows() {
-                    return document.querySelectorAll("#produk-body tr");
-                }
+                let selectedUrl = null;
+                let selectedRow = null;
 
+                document.addEventListener("click", function(e) {
+
+                    const deleteBtn = e.target.closest(".btn-delete");
+
+                    if (deleteBtn) {
+                        selectedUrl = deleteBtn.dataset.url;
+                        selectedRow = deleteBtn.closest("tr");
+                        deleteModal.style.display = "flex";
+                        return;
+                    }
+
+                    if (e.target === deleteModal) {
+                        deleteModal.style.display = "none";
+                    }
+
+                    if (e.target === successModal) {
+                        successModal.style.display = "none";
+                    }
+
+                });
+
+                cancelDelete.addEventListener("click", function() {
+                    deleteModal.style.display = "none";
+                });
+
+                confirmDelete.addEventListener("click", function() {
+
+                    if (!selectedUrl) return;
+
+                    fetch(selectedUrl, {
+                            method: "DELETE",
+                            headers: {
+                                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                                "Content-Type": "application/json"
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+
+                            if (data.success) {
+
+                                if (selectedRow) {
+                                    selectedRow.remove();
+                                }
+
+                                deleteModal.style.display = "none";
+                                successModal.style.display = "flex";
+
+                                setTimeout(() => {
+                                    successModal.style.display = "none";
+                                }, 1500);
+                            }
+
+                        })
+                        .catch(error => console.error(error));
+
+                });
                 if (searchInput) {
                     searchInput.addEventListener("input", function() {
+
                         const keyword = this.value.toLowerCase();
-                        const rows = getRows();
+                        const rows = document.querySelectorAll("#produk-body tr");
 
                         rows.forEach(row => {
                             const text = row.textContent.toLowerCase();
                             row.style.display = text.includes(keyword) ? "" : "none";
                         });
+
                     });
                 }
 
                 if (refreshBtn) {
                     refreshBtn.addEventListener("click", function() {
                         searchInput.value = "";
-                        getRows().forEach(row => row.style.display = "table-row");
+                        document.querySelectorAll("#produk-body tr")
+                            .forEach(row => row.style.display = "");
                     });
                 }
 
@@ -227,55 +286,12 @@
                     if (e.target.classList.contains('modal-overlay')) {
                         e.target.style.display = 'none';
                     }
-                });
 
-                let selectedId = null;
-                let selectedRow = null;
-
-                document.addEventListener("click", function(e) {
-
-                    const deleteBtn = e.target.closest(".btn-delete");
-                    if (deleteBtn) {
-                        selectedId = deleteBtn.dataset.id;
-                        selectedRow = deleteBtn.closest("tr");
-                        deleteModal.style.display = "flex";
-                        return;
-                    }
-
-                    if (e.target === deleteModal) deleteModal.style.display = "none";
-                    if (e.target === successModal) successModal.style.display = "none";
-                });
-
-                cancelDelete.addEventListener("click", function() {
-                    deleteModal.style.display = "none";
-                });
-
-                confirmDelete.addEventListener("click", function() {
-
-                    fetch(`/produk/${selectedId}`, {
-                            method: "DELETE",
-                            headers: {
-                                "X-CSRF-TOKEN": "{{ csrf_token() }}",
-                                "Content-Type": "application/json"
-                            }
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                selectedRow.remove();
-                                deleteModal.style.display = "none";
-                                successModal.style.display = "flex";
-
-                                setTimeout(() => {
-                                    successModal.style.display = "none";
-                                }, 1500);
-                            }
-                        })
-                        .catch(error => console.error("Error:", error));
                 });
 
             });
         </script>
+
 
         <style>
             .table-card {

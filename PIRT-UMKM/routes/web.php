@@ -24,11 +24,14 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('role:admin')->group(function () {
         Route::get('/admin/produk', [AdminController::class, 'produk'])->name('admin.produk');
+        Route::get('/admin/produk/{produk}', [AdminController::class, 'produkDetail'])->name('admin.produk.detail');
         Route::get('/admin/produk/{id}/modal', [AdminController::class, 'produkModal'])->name('admin.produk.modal');
         Route::delete('/admin/produk/{id}', [AdminController::class, 'produkDestroy']);
 
         Route::get('/admin/usaha', [AdminController::class, 'usaha'])->name('admin.usaha');
         Route::delete('/admin/usaha/{id}', [AdminController::class, 'usahaDestroy'])->name('admin.usaha.destroy');
+        Route::get('/admin/usaha/{usaha}/detail', [AdminController::class, 'usahaDetail'])->name('admin.usaha.detail');
+        Route::get('/admin/usaha/{usaha}/edit-inspeksi', [AdminController::class, 'editInspeksi'])->name('admin.usaha.editInspeksi');
 
         Route::get('/admin/persetujuan', [AdminController::class, 'persetujuan'])->name('admin.persetujuan');
         Route::patch('/admin/persetujuan/produk/{produk}', [AdminController::class, 'produkStatus'])->name('persetujuan.produk');
@@ -37,6 +40,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:user')->group(function () {
         Route::get('/profil', [UserController::class, 'profil'])->name('profil.usaha');
         Route::put('/profil/{id}', [UserController::class, 'profilUpdate'])->name('profil.usaha.update');
+        Route::get('/usaha/{usaha}/hasil-inspeksi', [UserController::class, 'hasilInspeksi'])->name('hasil.inspeksi');
 
         Route::get('/pendaftaran-usaha', [UserController::class, 'usaha'])->name('usaha.pendaftaran');
         Route::post('/pendaftaran-usaha', [UserController::class, 'usahaStore'])->name('usaha.pendaftaran.store');
@@ -47,13 +51,5 @@ Route::middleware('auth')->group(function () {
         Route::post('/pendaftaran-produk', [UserController::class, 'pendaftaranProdukStore'])->name('produk.usaha.pendaftaran.store');
     });
 });
-
-
-// Route::get('/dashboard', function () {
-//     return view('user.dashboard');
-// });
-// Route::get('/dashboardkosong', function () {
-//     return view('user.dashboardkosong');
-// });
 
 

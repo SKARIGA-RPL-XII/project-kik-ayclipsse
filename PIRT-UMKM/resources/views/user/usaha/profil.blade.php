@@ -49,9 +49,10 @@
                         <tr>
                             <td>Hasil Inspeksi</td>
                             <td>:
-                                <a href="javascript:void(0)" class="link" id="openInspeksi">
+                                <a href="{{ route('hasil.inspeksi', $usaha->id) }}" class="link">
                                     View Hasil Inspeksi
                                 </a>
+
                             </td>
                         </tr>
                     </table>
@@ -295,4 +296,4 @@
         });
     </script>
 
-@endsection 
+@endsection

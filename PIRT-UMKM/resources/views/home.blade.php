@@ -5,12 +5,10 @@
     <body>
         <div class="font-['Montserrat']">
             <section class="hero">
-                <!-- BACKGROUND IMAGE -->
                 <div class="hero-bg">
                     <img src="img/features.jpg" alt="">
                 </div>
 
-                <!-- CONTENT -->
                 <div class="hero-content">
                     <h1 class="hero-title">
                         <span class="accent">Pendaftaran</span> Produk Industri Rumah Tangga<br>
@@ -21,12 +19,9 @@
                     <div class="lengkung">
                         <img src="img/lengkung1.png">
                     </div>
-                    <!-- SLIDER -->
                     <div class="slider-container">
-                        <!-- overlay kiri -->
                         <div class="fade fade-left"></div>
 
-                        <!-- slider -->
                         <div class="slider" id="slider">
                             <img src="img/food1.png">
                             <img src="img/food1.png">
@@ -36,7 +31,6 @@
                             <img src="img/food1.png">
                         </div>
 
-                        <!-- overlay kanan -->
                         <div class="fade fade-right"></div>
                     </div>
 
@@ -73,13 +67,11 @@
     </body>
 
     <style>
-        /* FONT */
         body {
             font-family: 'Montserrat', sans-serif;
             margin: 0;
         }
 
-        /* HERO */
         .hero {
             position: relative;
             width: 100%;
@@ -99,7 +91,6 @@
             object-fit: cover;
         }
 
-        /* CONTENT */
         .hero-content {
             position: relative;
             z-index: 2;
@@ -124,7 +115,6 @@
             color: #f4b400;
         }
 
-        /* SLIDER */
         .slider-container {
             width: 100%;
             overflow: hidden;
@@ -151,7 +141,6 @@
             flex-shrink: 0;
         }
 
-        /* Fade putih kiri & kanan */
         .fade {
             position: absolute;
             top: 0;

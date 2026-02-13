@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Inspeksi;
+use App\Models\InspeksiDetail;
 use App\Models\Produk;
 use App\Models\Usaha;
 use Illuminate\Http\Request;
@@ -49,6 +51,11 @@ class AdminController extends Controller
 
         return view('admin.produk', compact('produk'));
     }
+    public function produkDetail(Produk $produk)
+    {
+        return view('admin.detail-produk', compact('produk'));
+    }
+
     public function produkModal($id)
     {
         $produk = Produk::with([
@@ -102,6 +109,46 @@ class AdminController extends Controller
 
         return view('admin.usaha', compact('usaha'));
     }
+    public function usahaDetail(Usaha $usaha)
+    {
+        // Ambil inspeksi terakhir usaha ini
+        $inspeksi = Inspeksi::where('usaha_id', $usaha->id)
+            ->latest()
+            ->first();
+
+        $details = collect();
+
+        if ($inspeksi) {
+            $details = InspeksiDetail::with('variabel')
+                ->where('inspeksi_id', $inspeksi->id)
+                ->get()
+                ->groupBy(function ($item) {
+                    return $item->variabel->nama_kategori;
+                });
+        }
+
+        return view('admin.detail-usaha', compact('usaha', 'details'));
+    }
+    public function editInspeksi(Usaha $usaha)
+    {
+        $inspeksi = Inspeksi::where('usaha_id', $usaha->id)
+            ->latest()
+            ->first();
+
+        $details = collect();
+
+        if ($inspeksi) {
+            $details = InspeksiDetail::with('variabel')
+                ->where('inspeksi_id', $inspeksi->id)
+                ->get()
+                ->groupBy(function ($item) {
+                    return optional($item->variabel)->nama_kategori ?? 'Lainnya';
+                });
+        }
+
+        return view('admin.edit-inspeksi', compact('usaha', 'details'));
+    }
+
     public function usahaDestroy($id)
     {
         $usaha = Usaha::findOrFail($id);

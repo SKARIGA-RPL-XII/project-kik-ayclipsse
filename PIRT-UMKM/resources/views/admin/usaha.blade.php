@@ -427,7 +427,7 @@
         }
     </style>
     <div class="page-header">
-        <h1>Selamat Datang Kembali <span>Raysha!</span></h1>
+        <h1>Usaha</h1>
         <p>Kelola pendaftaran PIRT dan produk usahamu di sini.</p>
     </div>
 
@@ -472,9 +472,10 @@
                                 </td>
 
                                 <td class="action">
-                                    <a href="javascript:void(0)" class="icon-btn btn-detail">
+                                    <a href="{{ route('admin.usaha.detail', $item->id) }}" class="icon-btn">
                                         <img src="{{ asset('img/eye.png') }}">
                                     </a>
+
                                     <a href="javascript:void(0)" class="icon-btn btn-delete"
                                         data-url="{{ route('admin.usaha.destroy', $item->id) }}">
                                         <img src="{{ asset('img/trash.png') }}">
@@ -565,12 +566,16 @@
                                 <span class="badge-success">Terdaftar PIRT</span>
                             </td>
                             <td class="action">
+                                <a href="/admin/usaha/${item.id}/detail" class="icon-btn">
+                                    <img src="/img/eye.png">
+                                </a>
                                 <a href="javascript:void(0)"
-                                   class="icon-btn btn-delete"
-                                   data-url="/admin/usaha/${item.id}">
+                                class="icon-btn btn-delete"
+                                data-url="/admin/usaha/${item.id}">
                                     <img src="/img/trash.png">
                                 </a>
                             </td>
+
                         </tr>
                     `;
                             });

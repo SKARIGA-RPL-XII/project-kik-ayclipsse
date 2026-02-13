@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dokumen;
+use App\Models\InspeksiDetail;
 use App\Models\Produk;
 use App\Models\Usaha;
 use Illuminate\Http\Request;
@@ -16,7 +17,7 @@ class UserController extends Controller
         $user = Auth::user();
 
         $usaha = $user->usaha()->with([
-            'inspeksi.details.variable'
+            'inspeksi.details.variabel'
         ])->first();
 
         return view('user/usaha/profil', compact('user', 'usaha'));
@@ -24,6 +25,25 @@ class UserController extends Controller
     public function usaha()
     {
         return view('user.usaha.pendaftaran');
+    }
+    public function hasilInspeksi(Usaha $usaha)
+    {
+        $inspeksi = \App\Models\Inspeksi::where('usaha_id', $usaha->id)
+            ->latest()
+            ->first();
+
+        $details = collect();
+
+        if ($inspeksi) {
+            $details = InspeksiDetail::with('variabel')
+                ->where('inspeksi_id', $inspeksi->id)
+                ->get()
+                ->groupBy(function ($item) {
+                    return optional($item->variable)->nama_kategori;
+                });
+        }
+
+        return view('user.usaha.hasil-inspeksi', compact('usaha', 'details'));
     }
 
     public function usahaStore(Request $request)

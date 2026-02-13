@@ -1,6 +1,5 @@
 <div class="dashboard-admin">
 
-    <!-- HEADER -->
     <div class="dashboard-header">
         <h1>
             Selamat Datang Kembali
@@ -9,7 +8,6 @@
         <p>Kelola pendaftaran PIRT dan produk usahamu di sini.</p>
     </div>
 
-    <!-- STAT CARDS -->
     <div class="dashboard-cards">
 
         <div class="dashboard-card usaha">
@@ -105,7 +103,6 @@
         margin-bottom: 25px;
     }
 
-    /* CARDS */
     .dashboard-cards {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -132,7 +129,6 @@
         border-radius: 50%;
     }
 
-    /* VARIANTS */
     .dashboard-card.usaha {
         background: #fff1f1;
     }
@@ -157,7 +153,6 @@
         background: #d1f2e1;
     }
 
-    /* GRID */
     .dashboard-grid {
         display: grid;
         grid-template-columns: 2.5fr 1fr;
