@@ -13,18 +13,6 @@
         <div class="table-card">
 
             <div class="approval-top">
-                <div class="tab-wrapper">
-                    <a href="{{ route('admin.persetujuan', ['type' => 'usaha']) }}"
-                        class="tab-btn {{ $type === 'usaha' ? 'active' : '' }}">
-                        Tabel Usaha
-                    </a>
-
-                    <a href="{{ route('admin.persetujuan', ['type' => 'produk']) }}"
-                        class="tab-btn {{ $type === 'produk' ? 'active' : '' }}">
-                        Tabel Produk
-                    </a>
-                </div>
-
 
                 <div class="search-wrapper">
                     <div class="search-input">
@@ -57,17 +45,9 @@
                         @foreach ($data as $item)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-
-                                @if ($type === 'usaha')
-                                    <td>{{ $item->nama_usaha }}</td>
-                                    <td>-</td>
-                                    <td>{{ $item->jenis_usaha }}</td>
-                                @else
-                                    <td>{{ $item->usaha->nama_usaha }}</td>
-                                    <td>{{ $item->nama_produk }}</td>
-                                    <td>{{ $item->usaha->jenis_usaha }}</td>
-                                @endif
-
+                                <td>{{ $item->nama_usaha }}</td>
+                                <td>{{ $item->nama_produk ?? '-' }}</td>
+                                <td>{{ $item->jenis_usaha ?? $item->jenis_produk }}</td>
                                 <td>
                                     @if ($item->status == 'disetujui')
                                         <span class="badge-success">Disetujui</span>
@@ -77,10 +57,8 @@
                                         <span class="badge-warning">Menunggu</span>
                                     @endif
                                 </td>
-
                                 <td>
-                                    <button class="btn-approval" data-id="{{ $item->id }}"
-                                        data-type="{{ $type }}">
+                                    <button class="btn-approval" data-id="{{ $item->id }}">
                                         Approve
                                     </button>
                                 </td>
@@ -162,7 +140,6 @@
     </div>
 
     <style>
-        
         .table-card {
             background: #fff;
             padding: 20px;
@@ -848,40 +825,35 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-
+            // --- Inisialisasi Elemen ---
             const searchInput = document.getElementById("searchInput");
             const refreshBtn = document.getElementById("refreshBtn");
             const tbody = document.querySelector(".custom-table tbody");
             const tabs = document.querySelectorAll(".tab-btn");
+            const approvalModal = document.getElementById("approvalModal");
+            const approvalForm = document.getElementById("approvalForm");
 
-            let currentType = "{{ $type }}";
             let debounceTimer;
 
+            // --- Fungsi Load Data (AJAX) ---
             function loadData(keyword = "") {
-
-                fetch(`{{ route('admin.persetujuan') }}?type=${currentType}&q=${keyword}`, {
+                // Ambil URL dari route Laravel, hapus parameter type karena tidak digunakan
+                fetch(`{{ route('admin.persetujuan') }}?q=${keyword}`, {
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest'
                         }
                     })
                     .then(res => res.json())
                     .then(data => {
-
                         tbody.innerHTML = "";
 
                         if (data.length === 0) {
-                            tbody.innerHTML = `
-                    <tr>
-                        <td colspan="6">Tidak ada data</td>
-                    </tr>
-                `;
+                            tbody.innerHTML = `<tr><td colspan="6">Tidak ada data</td></tr>`;
                             return;
                         }
 
                         data.forEach((item, index) => {
-
                             let badge = "";
-
                             if (item.status === "disetujui") {
                                 badge = `<span class="badge-success">Disetujui</span>`;
                             } else if (item.status === "ditolak") {
@@ -894,50 +866,66 @@
                     <tr>
                         <td>${index + 1}</td>
                         <td>${item.nama_usaha}</td>
-                        <td>${item.nama_produk}</td>
-                        <td>${item.jenis}</td>
+                        <td>${item.nama_produk ? item.nama_produk : '-'}</td>
+                        <td>${item.jenis ? item.jenis : '-'}</td>
                         <td>${badge}</td>
                         <td>
-                            <button class="btn-approval"
-                                data-id="${item.id}"
-                                data-type="${item.type}">
+                            <button class="btn-approval" data-id="${item.id}">
                                 Approve
                             </button>
                         </td>
                     </tr>
                 `;
                         });
-
-                    });
+                    })
+                    .catch(err => console.error("Error loading data:", err));
             }
 
+            // --- Logika Tombol Approve (Event Delegation) ---
+            // Menggunakan document.addEventListener agar tombol hasil search tetap bisa diklik
+            document.addEventListener("click", function(e) {
+                if (e.target && e.target.classList.contains("btn-approval")) {
+                    // Ambil ID dari attribute data-id tombol
+                    const id = e.target.getAttribute("data-id");
+
+                    // Sesuaikan URL dengan parameter {usaha} di Controller
+                    // Route model binding mencari ID ini secara otomatis
+                    approvalForm.action = `/admin/persetujuan/usaha/${id}`;
+
+                    // Tampilkan Modal
+                    approvalModal.classList.add("active");
+                }
+            }); // --- Menutup Modal ---
+            // Tutup jika klik di luar box modal (pada overlay)
+            approvalModal.addEventListener("click", function(e) {
+                if (e.target === approvalModal) {
+                    approvalModal.classList.remove("active");
+                }
+            });
+
+            // --- Fitur Pencarian ---
             searchInput.addEventListener("keyup", function() {
-
                 clearTimeout(debounceTimer);
-
                 debounceTimer = setTimeout(() => {
                     loadData(this.value);
                 }, 300);
             });
 
+            // --- Tombol Refresh ---
             refreshBtn.addEventListener("click", function() {
                 searchInput.value = "";
                 loadData();
             });
 
+            // --- Logika Tab (Opsional, jika masih ingin digunakan) ---
             tabs.forEach(tab => {
                 tab.addEventListener("click", function(e) {
                     e.preventDefault();
-
                     tabs.forEach(t => t.classList.remove("active"));
                     this.classList.add("active");
-
-                    currentType = this.textContent.includes("Produk") ? "produk" : "usaha";
-
                     loadData(searchInput.value);
                 });
             });
-
         });
     </script>
     >

@@ -114,35 +114,32 @@
 
         <div class="card">
 
-            <form method="POST" action="#">
+            <form method="POST" action="{{ route('admin.inspeksi.update', $usaha->id) }}">
                 @csrf
-
-                <table>
+                @method('PUT') <table>
                     <thead>
                         <tr>
                             <th>No</th>
                             <th>Variable / Komponen</th>
                             <th>Bobot</th>
                             <th>Tanda</th>
-                            <th>Nilai</th>
+                            <th>Nilai (Preview)</th>
                         </tr>
                     </thead>
                     <tbody>
-
                         @php $no = 1; @endphp
-
                         @foreach ($details as $kategori => $items)
                             <tr class="section">
                                 <td>{{ $loop->iteration }}.</td>
-                                <td colspan="4">{{ strtoupper($kategori) }}</td>
+                                <td colspan="4" style="text-align: left; padding-left: 20px;">
+                                    {{ strtoupper($kategori) }}
+                                </td>
                             </tr>
 
                             @foreach ($items as $item)
                                 <tr>
                                     <td>{{ $no++ }}</td>
-
-                                    <td>{{ $item->variabel->deskripsi }}</td>
-
+                                    <td style="text-align: left;">{{ $item->variabel->deskripsi }}</td>
                                     <td>
                                         <select name="bobot[{{ $item->id }}]">
                                             <option value="1" {{ $item->bobot == 1 ? 'selected' : '' }}>1</option>
@@ -150,32 +147,32 @@
                                             <option value="3" {{ $item->bobot == 3 ? 'selected' : '' }}>3</option>
                                         </select>
                                     </td>
-
                                     <td>
                                         <select name="jawaban[{{ $item->id }}]">
                                             <option value="ya" {{ $item->jawaban == 'ya' ? 'selected' : '' }}>Ya
                                             </option>
                                             <option value="tidak" {{ $item->jawaban == 'tidak' ? 'selected' : '' }}>
-                                                Tidak
-                                            </option>
+                                                Tidak</option>
                                         </select>
                                     </td>
-
-                                    <td>
-                                        {{ $item->jawaban == 'ya' ? $item->bobot : 0 }}
+                                    <td
+                                        style="font-weight: bold; color: {{ $item->jawaban == 'ya' ? 'green' : 'red' }}">
+                                        {{ $item->nilai }}
                                     </td>
-
                                 </tr>
                             @endforeach
                         @endforeach
-
                     </tbody>
                 </table>
 
-                <button class="btn-save">Simpan Perubahan</button>
-
+                <div style="margin-top: 20px;">
+                    <button type="submit" class="btn-save">Simpan Perubahan</button>
+                    <a href="{{ route('admin.usaha.detail', $usaha->id) }}"
+                        style="float: right; margin-right: 10px; padding: 10px; color: #666; text-decoration: none;">
+                        Batal
+                    </a>
+                </div>
             </form>
-
         </div>
 
     </div>

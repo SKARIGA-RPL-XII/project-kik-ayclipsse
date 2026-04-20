@@ -18,13 +18,11 @@ class Produk extends Model
         'tanggal_input',
         'status'
     ];
-    // produk milik satu usaha
     public function usaha()
     {
         return $this->belongsTo(Usaha::class);
     }
 
-    // produk punya banyak dokumen
     public function dokumen()
     {
         return $this->hasMany(Dokumen::class, 'produk_id');

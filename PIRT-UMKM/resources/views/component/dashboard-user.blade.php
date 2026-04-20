@@ -42,27 +42,25 @@
             <div class="dashboard-box">
                 <h3>Produk Terbaru</h3>
                 <ul class="produk-list">
-                    <li>
-                        <span>Keripik Singkong Balado</span>
-                        <small>Disetujui</small>
-                    </li>
-                    <li>
-                        <span>Kue Kering Nastar</span>
-                        <small>Menunggu</small>
-                    </li>
-                    <li>
-                        <span>Sambal Kemasan</span>
-                        <small>Disetujui</small>
-                    </li>
+                    @forelse($produkTerbaru as $produk)
+                        <li>
+                            <span>{{ $produk->nama_produk }}</span>
+                            <small>{{ ucfirst($produk->status) }}</small>
+                        </li>
+                    @empty
+                        <li>
+                            <span>Belum ada produk</span>
+                        </li>
+                    @endforelse
                 </ul>
             </div>
 
             <div class="dashboard-box">
                 <h3>Profil Usaha</h3>
                 <div class="profil-usaha">
-                    <p><strong>Nama Usaha:</strong> -</p>
-                    <p><strong>Alamat:</strong> -</p>
-                    <p><strong>Status:</strong> Belum Terdaftar</p>
+                    <p><strong>Nama Usaha:</strong> {{ $profilUsaha ? $profilUsaha->nama_usaha : '-' }}</p>
+                    <p><strong>Alamat:</strong> {{ $profilUsaha ? $profilUsaha->alamat_usaha : '-' }}</p>
+                    <p><strong>Status:</strong> {{ $profilUsaha ? ucfirst($profilUsaha->status) : 'Belum Terdaftar' }}</p>
                 </div>
             </div>
 

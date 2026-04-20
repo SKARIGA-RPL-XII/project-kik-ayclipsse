@@ -33,13 +33,13 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Logo Produk</th>
                             <th>Nama Produk</th>
                             <th>Jenis Produk</th>
                             <th>Komposisi</th>
                             <th>Berat Bersih</th>
                             <th>Kemasan</th>
-                            <th>Verifikasi</th>
+                            <th></th>
+                            <th></th>
                             <th></th>
                         </tr>
                     </thead>
@@ -54,13 +54,6 @@
                                 <td>{{ $item->berat_bersih }} gr</td>
                                 <td>{{ $item->kemasan }}</td>
                                 <td>
-                                    @if ($item->status === 'disetujui')
-                                        <span class="badge-success">Terdaftar PIRT</span>
-                                    @elseif ($item->status === 'ditolak')
-                                        <span class="badge-danger">Ditolak</span>
-                                    @else
-                                        <span class="badge-warning">Menunggu Persetujuan</span>
-                                    @endif
 
 
                                 </td>
@@ -75,7 +68,6 @@
                                         <img src="{{ asset('img/trash.png') }}">
                                     </a>
                                 </td>
-
                             </tr>
                         @empty
                             <tr>
@@ -89,30 +81,6 @@
                 </table>
             </div>
 
-            <div class="table-footer">
-                <div class="showing">
-                    Showing
-                    <span class="showing-count">
-                        5 <span class="caret">▾</span>
-                    </span>
-                    data out of 20
-                </div>
-
-                <div class="pagination-wrapper">
-                    <span class="per-page">Data per page</span>
-
-                    <div class="pagination">
-                        <button class="nav">‹</button>
-
-                        <button class="active">1</button>
-                        <button class="page">2</button>
-                        <span class="dots">…</span>
-                        <button class="page">5</button>
-
-                        <button class="nav">›</button>
-                    </div>
-                </div>
-            </div>
         </div>
 
     </div>
@@ -242,6 +210,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            background-color: #003366
         }
 
         .refresh-btn img {
@@ -429,68 +398,6 @@
             color: #6b7280;
         }
 
-
-        .pagination {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .pagination button {
-            border: none;
-            background: transparent;
-            font-size: 12px;
-            cursor: pointer;
-            color: #083b6f;
-            padding: 0;
-        }
-
-        .pagination .page {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            background: #ffffff;
-            border: 1px solid #003366;
-            color: #003366;
-            font-size: 12px;
-            font-weight: 500;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .pagination .active {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            background: #003366;
-            color: #ffffff;
-            font-weight: 500;
-        }
-
-        .pagination .nav {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            background: #083b6f;
-            color: #ffffff;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .pagination .dots {
-            font-size: 12px;
-            color: #083b6f;
-        }
-
-        .pagination .page:hover {
-            background: #003366;
-            color: #ffffff;
-        }
-
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -567,7 +474,7 @@
             font-size: 13px;
         }
 
-        =.btn-detail-produk {
+        .btn-detail-produk {
             margin-top: 16px;
             background: #083b6f;
             color: #fff;
@@ -599,7 +506,6 @@
             line-height: 1.6;
         }
 
-        /* SECTION ROW INSPEKSI */
         .inspeksi-table .section {
             background: #f1f5f9;
             font-weight: 700;

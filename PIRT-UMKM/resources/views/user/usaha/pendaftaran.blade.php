@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -188,11 +189,12 @@
             </div>
 
             <div class="buttons">
-                <button type="button" class="btn btn-prev">Sebelumnya</button>
+                {{-- <button type="button" class="btn btn-prev">Sebelumnya</button> --}}
                 <button type="submit" class="btn btn-next">Selanjutnya</button>
             </div>
         </form>
     </div>
 
 </body>
+
 </html>

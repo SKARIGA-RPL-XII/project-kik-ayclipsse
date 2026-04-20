@@ -10,7 +10,7 @@ class InspeksiDetail extends Model
 
     protected $fillable = [
         'inspeksi_id',
-        'variable_id',
+        'variabel_id',
         'jawaban',
         'nilai',
         'bobot'

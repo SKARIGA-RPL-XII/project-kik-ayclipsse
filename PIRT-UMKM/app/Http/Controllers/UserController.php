@@ -24,6 +24,12 @@ class UserController extends Controller
     }
     public function usaha()
     {
+        $user = Auth::user();
+
+        if ($user->usaha()->exists()) {
+            return redirect()->route('user.produk.pendaftaran')
+                ->with('info', 'Silakan lanjutkan pendaftaran produk untuk usaha Anda.');
+        }
         return view('user.usaha.pendaftaran');
     }
     public function hasilInspeksi(Usaha $usaha)

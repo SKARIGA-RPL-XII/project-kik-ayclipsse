@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
+        // ================= USER =================
         $adminId = DB::table('users')->insertGetId([
             'name' => 'Admin PIRT',
             'email' => 'admin@pirt.test',
@@ -44,7 +45,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $users = [];
-
         for ($i = 1; $i <= 5; $i++) {
             $users[] = DB::table('users')->insertGetId([
                 'name' => "UMKM User {$i}",
@@ -58,12 +58,31 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        $usahaList = [];
+        // ================= DATA REALISTIS =================
+        $namaUsahaList = [
+            'Warung Makan Sederhana',
+            'Dapur Bu Sari',
+            'UMKM Rasa Nusantara',
+            'Cemilan Enak Jaya',
+            'Kedai Kopi Santai'
+        ];
 
+        $produkList = [
+            ['Keripik Singkong Pedas', 'Singkong, cabai, garam'],
+            ['Sambal Botol Homemade', 'Cabai, bawang, minyak'],
+            ['Kue Nastar', 'Tepung, mentega, selai nanas'],
+            ['Minuman Jahe Instan', 'Jahe, gula aren'],
+            ['Kerupuk Udang', 'Udang, tepung tapioka'],
+            ['Keripik Pisang Manis', 'Pisang, gula'],
+            ['Brownies Kukus', 'Coklat, tepung, telur'],
+        ];
+
+        // ================= USAHA =================
+        $usahaList = [];
         foreach ($users as $index => $userId) {
             $usahaList[] = DB::table('usaha')->insertGetId([
                 'user_id' => $userId,
-                'nama_usaha' => 'Usaha Kuliner ' . ($index + 1),
+                'nama_usaha' => $namaUsahaList[$index],
                 'alamat_usaha' => 'Jl. Mawar No.' . ($index + 1),
                 'jenis_usaha' => 'Makanan / Minuman',
                 'tanggal_berdiri' => Carbon::now()->subYears(rand(3, 10)),
@@ -74,14 +93,19 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
+        // ================= PRODUK =================
         foreach ($usahaList as $usahaId) {
-            for ($i = 1; $i <= 3; $i++) {
+            for ($i = 0; $i < 3; $i++) {
+
+                $produk = $produkList[array_rand($produkList)];
+                $kemasanList = ['Plastik', 'Botol', 'Standing Pouch'];
+
                 DB::table('produk')->insert([
                     'usaha_id' => $usahaId,
-                    'nama_produk' => "Produk {$i}",
-                    'komposisi' => 'Bahan alami pilihan',
+                    'nama_produk' => $produk[0],
+                    'komposisi' => $produk[1],
                     'berat_bersih' => rand(100, 500),
-                    'kemasan' => 'Plastik / Botol',
+                    'kemasan' => $kemasanList[array_rand($kemasanList)],
                     'tanggal_input' => now(),
                     'status' => 'menunggu',
                     'created_at' => now(),
@@ -90,6 +114,7 @@ class DatabaseSeeder extends Seeder
             }
         }
 
+        // ================= VARIABEL =================
         $variabelData = [
             ['A', 'Lokasi & Lingkungan', 1, 'Lingkungan bersih', 2],
             ['A', 'Lokasi & Lingkungan', 2, 'Bebas pencemaran', 2],
@@ -115,6 +140,7 @@ class DatabaseSeeder extends Seeder
 
         $variabelList = DB::table('variabel')->get();
 
+        // ================= INSPEKSI =================
         foreach ($usahaList as $usahaId) {
 
             $inspeksiId = DB::table('inspeksi')->insertGetId([
@@ -152,18 +178,14 @@ class DatabaseSeeder extends Seeder
                 ? 'Memenuhi Syarat'
                 : 'Tidak Memenuhi Syarat';
 
-            DB::table('inspeksi')
-                ->where('id', $inspeksiId)
-                ->update([
-                    'total_nilai' => $totalNilai,
-                    'kesimpulan' => $kesimpulan
-                ]);
+            DB::table('inspeksi')->where('id', $inspeksiId)->update([
+                'total_nilai' => $totalNilai,
+                'kesimpulan' => $kesimpulan
+            ]);
 
-            DB::table('usaha')
-                ->where('id', $usahaId)
-                ->update([
-                    'hasil_inspeksi' => $kesimpulan
-                ]);
+            DB::table('usaha')->where('id', $usahaId)->update([
+                'hasil_inspeksi' => $kesimpulan
+            ]);
         }
     }
 }

@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Pendaftaran PIRT Produk Usaha</title>
-
     <style>
         body {
             font-family: Arial, Helvetica, sans-serif;
@@ -23,7 +22,6 @@
             font-weight: 600;
         }
 
-        /* ===== CARD ===== */
         .card {
             background: #ffffff;
             border-radius: 10px;
@@ -58,7 +56,6 @@
             display: none;
         }
 
-        /* ===== FORM ===== */
         .form-group {
             margin-bottom: 15px;
         }
@@ -102,10 +99,9 @@
             border: none;
         }
 
-        /* ===== BUTTON ===== */
         .buttons {
             display: flex;
-            justify-content: space-between;
+            justify-content: left;
             margin-top: 40px;
         }
 
@@ -218,11 +214,8 @@
                         <div class="row-2">
                             <div class="form-group">
                                 <label>Jenis Kemasan</label>
-                                <select name="produk[0][kemasan]">
+                                <select name="produk[0][kemasan]" class="kemasan-select">
                                     <option value="">Pilih</option>
-                                    <option>Botol</option>
-                                    <option>Plastik</option>
-                                    <option>Kaca</option>
                                 </select>
                             </div>
 
@@ -232,10 +225,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label>Logo Usaha</label>
-                            <input type="file" name="produk[0][image]">
-                        </div>
+
                     </div>
                 </div>
 
@@ -246,7 +236,7 @@
             </div>
 
             <div class="buttons">
-                <a href="{{ route('produk.usaha') }}" class="btn btn-prev">Sebelumnya</a>
+                {{-- <a href="{{ route('produk.usaha') }}" class="btn btn-prev">Sebelumnya</a> --}}
                 <button type="submit" class="btn btn-submit">Kirim</button>
             </div>
 
@@ -257,68 +247,88 @@
     <script>
         let produkIndex = 1;
 
+        const jenisProduk = "{{ $usaha->jenis_usaha }}".toLowerCase();
+
+        const opsiKemasan = {
+            minuman: ['Botol', 'Gelas Plastik', 'Kaleng'],
+            makanan: ['Kotak Kardus', 'Plastik', 'Kertas Food Grade', 'Kaca', 'Besek']
+        };
+
+        function updateKemasanOptions(selectElement) {
+            selectElement.innerHTML = '<option value="">Pilih</option>';
+
+            let options = [];
+            if (jenisProduk.includes('minuman')) {
+                options = opsiKemasan.minuman;
+            } else {
+                options = opsiKemasan.makanan;
+            }
+
+            options.forEach(item => {
+                let opt = document.createElement('option');
+                opt.value = item;
+                opt.innerHTML = item;
+                selectElement.appendChild(opt);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstSelect = document.querySelector('.kemasan-select');
+            if (firstSelect) updateKemasanOptions(firstSelect);
+        });
+
         function tambahProduk() {
             const wrapper = document.getElementById('produk-wrapper');
-
             const card = document.createElement('div');
             card.classList.add('card');
 
             card.innerHTML = `
-                <div class="card-header" onclick="toggleCard(this)">
-                    <h3>Produk ${produkIndex + 1}</h3>
-                    <span class="toggle-icon">−</span>
+        <div class="card-header" onclick="toggleCard(this)">
+            <h3>Produk ${produkIndex + 1}</h3>
+            <span class="toggle-icon">−</span>
+        </div>
+
+        <div class="card-body">
+            <div class="form-group">
+                <label>Nama Produk</label>
+                <input type="text" name="produk[${produkIndex}][nama_produk]">
+            </div>
+
+            <div class="form-group">
+                <label>Komposisi</label>
+                <textarea name="produk[${produkIndex}][komposisi]"></textarea>
+            </div>
+
+            <div class="row-2">
+                <div class="form-group">
+                    <label>Jenis Kemasan</label>
+                    <select name="produk[${produkIndex}][kemasan]" class="kemasan-select">
+                        <option value="">Pilih</option>
+                    </select>
                 </div>
 
-                <div class="card-body">
-                    <div class="form-group">
-                        <label>Nama Produk</label>
-                        <input type="text" name="produk[${produkIndex}][nama_produk]">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Komposisi</label>
-                        <textarea name="produk[${produkIndex}][komposisi]"></textarea>
-                    </div>
-
-                    <div class="row-2">
-                        <div class="form-group">
-                            <label>Jenis Kemasan</label>
-                            <select name="produk[${produkIndex}][kemasan]">
-                                <option value="">Pilih</option>
-                                <option>Botol</option>
-                                <option>Plastik</option>
-                                <option>Kaca</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Berat Bersih</label>
-                            <input type="number" name="produk[${produkIndex}][berat_bersih]">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Logo Usaha</label>
-                        <input type="file" name="produk[${produkIndex}][image]">
-                    </div>
+                <div class="form-group">
+                    <label>Berat Bersih</label>
+                    <input type="number" name="produk[${produkIndex}][berat_bersih]">
                 </div>
-            `;
+            </div>
+
+        </div>
+    `;
 
             wrapper.appendChild(card);
+
+            const newSelect = card.querySelector('.kemasan-select');
+            updateKemasanOptions(newSelect);
+
             produkIndex++;
         }
 
         function toggleCard(header) {
             const body = header.nextElementSibling;
             const icon = header.querySelector('.toggle-icon');
-
             body.classList.toggle('hidden');
-
-            if (body.classList.contains('hidden')) {
-                icon.innerText = '+';
-            } else {
-                icon.innerText = '−';
-            }
+            icon.innerText = body.classList.contains('hidden') ? '+' : '−';
         }
     </script>
 

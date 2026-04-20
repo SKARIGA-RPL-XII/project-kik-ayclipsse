@@ -20,26 +20,31 @@
         }
 
         .search-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            /* Menghilangkan jarak */
+            width: fit-content;
+        }
+
+        .search-wrapper>div {
+            flex: none !important;
+            /* Mencegah div ini melebar */
+            width: 300px;
+            /* Atur lebar input sesuai keinginanmu di sini */
             position: relative;
-            flex: 1;
-            max-width: 620px;
-            gap: 5px;
         }
 
         .search-wrapper input {
             width: 100%;
+            /* Memenuhi 300px dari parentnya */
             height: 40px;
             padding: 0 14px 0 42px;
             font-size: 14px;
             border: 1px solid #374151;
-            border-radius: 5px;
+            border-radius: 5px 5px 5px 5px;
+            /* Siku di sisi kanan */
             outline: none;
-            color: #374151;
-            flex: 1;
-        }
-
-        .search-wrapper input::placeholder {
-            color: #9ca3af;
         }
 
         .search-icon {
@@ -49,24 +54,22 @@
             transform: translateY(-50%);
             width: 18px;
             height: 18px;
-            opacity: 0.9;
         }
 
         .btn-primary {
             height: 40px;
-            background: #083b6f;
-            color: #ffffff;
-            border: none;
-            padding: 0 18px;
-            font-size: 13px;
-            font-weight: 500;
-            border-radius: 6px;
-            cursor: pointer;
-            white-space: nowrap;
+            border: 1px solid #374151;
+            border-radius: 5px 5px 5px 5px;
+            padding: 0 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #003366
+
         }
 
         .btn-primary:hover {
-            background: #062f57;
+            background: #a9aeb3;
         }
 
         .table-container {
@@ -435,9 +438,16 @@
         <div class="table-card">
 
             <div class="table-top">
-                <div class="search-wrapper">
-                    <img src="{{ asset('img/search.png') }}" class="search-icon">
-                    <input type="text" id="search" placeholder="Cari nama, jenis, alamat..." autocomplete="off">
+                <div class="search-wrapper" style="display: flex; gap: 10px;">
+                    <div style="position: relative; flex: 1;">
+                        <img src="{{ asset('img/search.png') }}" class="search-icon">
+                        <input type="text" id="search" placeholder="Cari nama, jenis, alamat..." autocomplete="off">
+                    </div>
+
+                    <button type="button" class="btn-primary" id="refresh-btn"
+                        style="display: flex; align-items: center; gap: 8px;">
+                        <img src="{{ asset('img/refresh.png') }}" style="width: 16px; filter: brightness(0) invert(1);">
+                    </button>
                 </div>
             </div>
 
@@ -455,9 +465,10 @@
                     </thead>
 
                     <tbody id="usaha-body">
-                        @foreach ($usaha as $i => $item)
+                        @foreach ($usaha as $item)
                             <tr data-id="{{ $item->id }}">
-                                <td>{{ $usaha->firstItem() + $i }}</td>
+                                <td>{{ $loop->iteration }}</td>
+
                                 <td>{{ $item->nama_usaha }}</td>
                                 <td>{{ $item->jenis_usaha }}</td>
                                 <td>{{ $item->alamat_usaha }}</td>
@@ -472,14 +483,17 @@
                                 </td>
 
                                 <td class="action">
-                                    <a href="{{ route('admin.usaha.detail', $item->id) }}" class="icon-btn">
-                                        <img src="{{ asset('img/eye.png') }}">
-                                    </a>
+                                    @if ($item->status === 'disetujui')
+                                        <a href="{{ route('admin.usaha.detail', $item->id) }}" class="icon-btn"
+                                            title="Detail Usaha">
+                                            <img src="{{ asset('img/eye.png') }}">
+                                        </a>
 
-                                    <a href="javascript:void(0)" class="icon-btn btn-delete"
-                                        data-url="{{ route('admin.usaha.destroy', $item->id) }}">
-                                        <img src="{{ asset('img/trash.png') }}">
-                                    </a>
+                                        <a href="javascript:void(0)" class="icon-btn btn-delete"
+                                            data-url="{{ route('admin.usaha.destroy', $item->id) }}" title="Hapus">
+                                            <img src="{{ asset('img/trash.png') }}">
+                                        </a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
@@ -515,8 +529,8 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-
             const searchInput = document.getElementById('search');
+            const refreshBtn = document.getElementById('refresh-btn');
             const tbody = document.getElementById('usaha-body');
 
             const deleteModal = document.getElementById("deleteModal");
@@ -528,74 +542,77 @@
             let selectedRow = null;
             let delay = null;
 
-            searchInput.addEventListener('keyup', function() {
+            function loadData(query = '') {
+                fetch(`{{ route('admin.usaha') }}?q=${encodeURIComponent(query)}`, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        tbody.innerHTML = '';
+                        if (data.length === 0) {
+                            tbody.innerHTML =
+                                `<tr><td colspan="6" style="text-align:center;padding:20px">Data tidak ditemukan</td></tr>`;
+                            return;
+                        }
 
-                clearTimeout(delay);
-
-                delay = setTimeout(() => {
-
-                    fetch(`{{ route('admin.usaha') }}?q=${encodeURIComponent(this.value)}`, {
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest'
+                        data.forEach((item, index) => {
+                            let badge = '';
+                            if (item.status === 'disetujui') {
+                                badge = '<span class="badge-success">Terdaftar PIRT</span>';
+                            } else if (item.status === 'ditolak') {
+                                badge = '<span class="badge-danger">Ditolak</span>';
+                            } else {
+                                badge = '<span class="badge-warning">Menunggu Persetujuan</span>';
                             }
-                        })
-                        .then(res => res.json())
-                        .then(data => {
 
-                            tbody.innerHTML = '';
-
-                            if (data.length === 0) {
-                                tbody.innerHTML = `
-                        <tr>
-                            <td colspan="6" style="text-align:center;padding:20px">
-                                Data tidak ditemukan
-                            </td>
-                        </tr>`;
-                                return;
+                            let actionButtons = '';
+                            if (item.status === 'disetujui') {
+                                actionButtons = `
+                            <a href="/admin/usaha/${item.id}/detail" class="icon-btn" title="Detail Usaha">
+                                <img src="/img/eye.png">
+                            </a>
+                            <a href="javascript:void(0)" class="icon-btn btn-delete" data-url="/admin/usaha/${item.id}" title="Hapus">
+                                <img src="/img/trash.png">
+                            </a>`;
                             }
 
-                            data.forEach((item, index) => {
-
-                                tbody.innerHTML += `
+                            tbody.innerHTML += `
                         <tr data-id="${item.id}">
-                            <td>${index+1}</td>
+                            <td>${index + 1}</td>
                             <td>${item.nama_usaha}</td>
                             <td>${item.jenis_usaha}</td>
                             <td>${item.alamat_usaha}</td>
-                            <td>
-                                <span class="badge-success">Terdaftar PIRT</span>
-                            </td>
-                            <td class="action">
-                                <a href="/admin/usaha/${item.id}/detail" class="icon-btn">
-                                    <img src="/img/eye.png">
-                                </a>
-                                <a href="javascript:void(0)"
-                                class="icon-btn btn-delete"
-                                data-url="/admin/usaha/${item.id}">
-                                    <img src="/img/trash.png">
-                                </a>
-                            </td>
-
-                        </tr>
-                    `;
-                            });
-
+                            <td>${badge}</td>
+                            <td class="action">${actionButtons}</td>
+                        </tr>`;
                         });
+                    });
+            }
 
+            // Event Search
+            searchInput.addEventListener('keyup', function() {
+                clearTimeout(delay);
+                delay = setTimeout(() => {
+                    loadData(this.value);
                 }, 300);
             });
 
-            document.addEventListener("click", function(e) {
+            // --- Event Refresh ---
+            refreshBtn.addEventListener('click', function() {
+                searchInput.value = ''; // Kosongkan input
+                loadData(); // Muat ulang data tanpa filter
+            });
 
+            // Event Delete (Delegation)
+            document.addEventListener("click", function(e) {
                 const deleteBtn = e.target.closest(".btn-delete");
                 if (deleteBtn) {
-
                     selectedUrl = deleteBtn.dataset.url;
                     selectedRow = deleteBtn.closest("tr");
-
                     deleteModal.style.display = "flex";
                 }
-
             });
 
             cancelDelete.addEventListener("click", function() {
@@ -603,43 +620,31 @@
             });
 
             confirmDelete.addEventListener("click", function() {
-
                 fetch(selectedUrl, {
                         method: "DELETE",
                         headers: {
-                            "X-CSRF-TOKEN": document
-                                .querySelector('meta[name="csrf-token"]')
+                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
                                 .getAttribute("content"),
                             "Content-Type": "application/json"
                         }
                     })
                     .then(res => res.json())
                     .then(data => {
-
                         if (data.success) {
-
-                            if (selectedRow) {
-                                selectedRow.remove();
-                            }
-
+                            if (selectedRow) selectedRow.remove();
                             deleteModal.style.display = "none";
                             successModal.style.display = "flex";
-
                             setTimeout(() => {
                                 successModal.style.display = "none";
                             }, 1500);
                         }
-
                     });
-
             });
 
             window.addEventListener("click", function(e) {
                 if (e.target === deleteModal) deleteModal.style.display = "none";
                 if (e.target === successModal) successModal.style.display = "none";
             });
-
         });
     </script>
-
 @endsection
